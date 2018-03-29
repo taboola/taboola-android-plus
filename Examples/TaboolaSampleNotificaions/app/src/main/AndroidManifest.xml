@@ -17,7 +17,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <!-- Handle Taboola Notification click -->
             <intent-filter>
                 <action android:name="com.taboola.android.plus.notification.NOTIFICATION_CLICK_EVENT" />

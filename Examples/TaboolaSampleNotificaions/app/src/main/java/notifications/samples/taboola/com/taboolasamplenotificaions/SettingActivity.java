@@ -1,7 +1,5 @@
 package notifications.samples.taboola.com.taboolasamplenotificaions;
 
-import android.app.KeyguardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,7 +10,10 @@ import android.util.Log;
 import android.widget.Switch;
 
 import com.google.gson.Gson;
+import com.taboola.android.api.TBPlacement;
+import com.taboola.android.api.TBRecommendationItem;
 import com.taboola.android.plus.TaboolaPlus;
+import com.taboola.android.plus.notification.TBNotificationManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +44,8 @@ public class SettingActivity extends AppCompatActivity {
 
         initTaboolaSdkPLus();
         initRecView();
+
+        handleClickIntentIfNeeded(getIntent());
     }
 
     @Override
@@ -170,6 +173,15 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void handleClickIntentIfNeeded(Intent intent) {
-        //TODO HANDLE CLICK
+        Bundle extras = intent.getExtras();
+        if ((intent.getAction() != null) &&
+                intent.getAction().equals(TBNotificationManager.NOTIFICATION_CLICK_INTENT_ACTION) &&
+                (extras != null)) {
+            TBPlacement placement = extras.getParcelable(TBNotificationManager.NOTIFICATION_CLICK_INTENT_EXTRA_PLACEMENT);
+            int itemIndex = extras.getInt(TBNotificationManager.NOTIFICATION_CLICK_INTENT_EXTRA_ITEM_INDEX);
+
+            TBRecommendationItem item = placement.getItems().get(itemIndex);
+            item.handleClick(this);
+        }
     }
 }
