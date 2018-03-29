@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TaboolaSampleNotifications</string>
+
+    <string name="title">Settings</string>
+    <string name="allow_notifications">Allow notifications</string>
+    <string name="chose_categories">Choose your content categories:</string>
+</resources>
