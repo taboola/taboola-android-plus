@@ -12,7 +12,7 @@ public class SettingCategoriesViewHolder extends RecyclerView.ViewHolder {
         void onCategoryChanges();
     }
 
-    CheckBox cbAllowCategory;
+    private CheckBox cbAllowCategory;
 
     @NonNull
     private SettingsHolderCallback callback;

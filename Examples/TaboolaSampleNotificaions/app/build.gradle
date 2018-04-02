@@ -31,7 +31,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
     //SDK
-    implementation(name: 'TaboolaSdkPlus-0.5.3(v11)release', ext: 'aar')
+    implementation(name: 'TaboolaSdkPlus-0.5.3(v11)-release', ext: 'aar')
     implementation(name: 'TaboolaSdk_1.3.3-21', ext: 'aar')
 
     implementation 'com.android.support:customtabs:27.1.0'

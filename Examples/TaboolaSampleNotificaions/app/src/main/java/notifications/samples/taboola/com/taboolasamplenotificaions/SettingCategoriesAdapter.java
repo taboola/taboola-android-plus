@@ -24,6 +24,7 @@ public class SettingCategoriesAdapter extends RecyclerView.Adapter<RecyclerView.
         this.categories = categories;
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_item, parent, false);

@@ -7,12 +7,10 @@ public class AppSettings implements Serializable {
 
     private boolean allowNotifications;
     private List<Category> categories;
-    private String config;
 
-    public AppSettings(boolean allowNotifications, List<Category> categories, String config) {
+    public AppSettings(boolean allowNotifications, List<Category> categories) {
         this.allowNotifications = allowNotifications;
         this.categories = categories;
-        this.config = config;
     }
 
     public boolean isAllowNotifications() {
@@ -29,13 +27,5 @@ public class AppSettings implements Serializable {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
-    }
-
-    public String getConfig() {
-        return config;
-    }
-
-    public void setConfig(String config) {
-        this.config = config;
     }
 }
