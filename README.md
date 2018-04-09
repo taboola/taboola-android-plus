@@ -16,9 +16,9 @@ the TaboolaPlus can be used in an app.
 
 ### Main features
 * Show Taboola recommendations as a notification, with a polished UI
-<img src="images/notification_small.pnG" width="500" height="whatever">
+<img src="https://github.com/taboola/taboola-android-plus/raw/master/images/notification_small.png" width="500" height="whatever">
 * Users can expand the notification for a larger, more detailed view
-<img src="images/notification_expanded.pnG" width="500" height="whatever">
+<img src="https://github.com/taboola/taboola-android-plus/raw/master/images/notification_expanded.png" width="500" height="whatever">
 * No special Android permissions required
 * Show recommendations from different content categories or choose a single "general" category to show the best and most interesting content for your users.
 * Users can scroll through the recommendations directly from the notification
