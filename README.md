@@ -5,9 +5,9 @@
 
 ## Table Of Contents
 1. [Getting Started](#1-getting-started)
-2. [Example Apps](#2-example-apps)
+2. [Example Apps](#2-example-app)
 3. [SDK Reference](#3-sdk-reference)
-5. [License](#4-license)
+4. [License](#4-license)
 
 ## Introduction
 Taboola SDK Plus allows you to display Taboola recommendations in an Android notification from your app.
@@ -15,26 +15,40 @@ You can browse through the sample app in this repository to see how
 the TaboolaPlus can be used in an app.
 
 ### Main features
+
 * Show Taboola recommendations as a notification, with a polished UI
 <img src="https://github.com/taboola/taboola-android-plus/raw/master/images/notification_small.png" width="500" height="whatever">
+
 * Users can expand the notification for a larger, more detailed view
 <img src="https://github.com/taboola/taboola-android-plus/raw/master/images/notification_expanded.png" width="500" height="whatever">
+
 * No special Android permissions required
+
 * Show recommendations from different content categories or choose a single "general" category to show the best and most interesting content for your users.
+
 * Users can scroll through the recommendations directly from the notification
+
 * Recommendations automatically update periodically (configurable)
+
 * Minimal network usage, can be configured to fetch new content when required or only over Wifi
+
 * Minimal device resource consumption (battery, CPU)
+
 * Tapping a notification navigates to your own app
+
 * Based on Taboola SDK, see [Taboola SDK documentation](https://github.com/taboola/taboola-android-api) for more details
+
 
 ## 1. Getting Started
 
 ### 1.1 Minimum requirements
 
+
 * Android version 5.0  (```android:minSdkVersion="21"```)
 
+
 ### 1.2 Incorporating the SDK
+
 
 * Add the library dependency to your project gradle file
 
@@ -44,20 +58,23 @@ the TaboolaPlus can be used in an app.
        
  TaboolaPlus has the following dependencies (added automatically)
 
- ```implementation 'com.taboola:android-sdk:2.0.+@aar'
-    implementation 'com.android.support:customtabs:26.1.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.picasso:picasso:2.5.2' 
-    ```
-    
+  ```
+ implementation 'com.taboola:android-sdk:2.0.+@aar'
+ implementation 'com.android.support:customtabs:26.1.0'
+ implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+ implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+ implementation 'com.squareup.picasso:picasso:2.5.2'
+  ```
+ 
 * Include this line in your app’s `AndroidManifest.xml` to allow Internet access
- ```
-   <uses-permission android:name="android.permission.INTERNET" />
- ```
+ 
+```<uses-permission android:name="android.permission.INTERNET" />
+```
+
 
 > ## Notice
 > We encourage developers to use the latest SDK version. In order to stay up-to-date we suggest subscribing to get github notifications whenever there is a new release. For more information check: https://help.github.com/articles/managing-notifications-for-pushes-to-a-repository/
+
 
 ### 1.3 Init TaboolaPlus
 Add the following initialization code your `Application` class. It's important to perform this initialization as early as possible during your app lifecyle, to make sure TaboolaPlus will be ready for action when you need it.
