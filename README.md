@@ -110,17 +110,6 @@ In order to start displyaing notifications, notifications should be enabled via 
 
 Once the notifications were enabled, they will continue to show and be updated periodically even if your app is not running.
 
-#### Setting categories for the notification
-As an app developer, you can choose to allow your user to customize the recommendations displayed on the notification by choosing content categories (News, Sports, Tech etc..)
-In order to show a mix of all content categories, set the "general" category.
-
-**Consult your Taboola account manager in order to enable category customiztion for your app**
-
-```java
-ArrayList<Category> categories = new ArrayList<>();
-categories.add(new Category("general", "General", true));
-TaboolaPlus.getInstance().getNotificationManager().setCategories(categories);
-```
 #### Enabling notifications
 ```java
  TaboolaPlus.getInstance()
@@ -136,6 +125,19 @@ Run this code to disable notifications:
                     .getNotificationManager()
                     .disable();
 ```
+
+#### Setting categories for the notification
+As an app developer, you can choose to allow your user to customize the recommendations displayed on the notification by choosing content categories (News, Sports, Tech etc..)
+In order to show a mix of all content categories, set the "general" category.
+
+**Consult your Taboola account manager in order to enable category customiztion for your app**
+
+```java
+ArrayList<Category> categories = new ArrayList<>();
+categories.add(new Category("general", "General", true));
+TaboolaPlus.getInstance().getNotificationManager().setCategories(categories);
+```
+
 
 ### 1.5 Handling notification click event
 Add the folowing intent filter in your app manifest to the activity that will handle clicks.
