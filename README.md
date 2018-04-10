@@ -103,14 +103,14 @@ public class MyApplication extends Application {
   ```
  
 ### 1.4 Controlling notifications
-In order to start displyaing notifications, notifications should be enabled via `TBNotificationManager#enable()` that can be obtained from `TaboolaPlus` class, and categories must be set via `TBNotificationManager#setCategories()`.
 
+#### Enabling notifications
+In order to start displyaing notifications, notifications should be enabled via `TBNotificationManager#enable()` that can be obtained from `TaboolaPlus` class.
 >##Notice
 >Please consider the best location within your app code to enabled notifications, in order to make sure that notifications appear as soon as possible after device reboot.
 
-Once the notifications were enabled, they will continue to show and be updated periodically even if your app is not running.
+Once the notifications are enabled, they will continue to show and be updated periodically even if your app is not running.
 
-#### Enabling notifications
 ```java
  TaboolaPlus.getInstance()
                     .getNotificationManager()
@@ -127,6 +127,7 @@ Run this code to disable notifications:
 ```
 
 #### Setting categories for the notification
+Categories must be set via `TBNotificationManager#setCategories()`.
 As an app developer, you can choose to allow your user to customize the recommendations displayed on the notification by choosing content categories (News, Sports, Tech etc..)
 In order to show a mix of all content categories, set the "general" category.
 
