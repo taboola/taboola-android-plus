@@ -67,9 +67,9 @@ the TaboolaPlus can be used in an app.
   ```
  
 * Include this line in your app’s `AndroidManifest.xml` to allow Internet access
- 
-```<uses-permission android:name="android.permission.INTERNET" />
-```
+  ```xml
+ <uses-permission android:name="android.permission.INTERNET" />
+ ```
 
 
 > ## Notice
