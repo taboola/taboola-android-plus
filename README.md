@@ -67,10 +67,9 @@ the TaboolaPlus can be used in an app.
   ```
  
 * Include this line in your app’s `AndroidManifest.xml` to allow Internet access
-  ```xml
+ ```xml
  <uses-permission android:name="android.permission.INTERNET" />
  ```
-
 
 > ## Notice
 > We encourage developers to use the latest SDK version. In order to stay up-to-date we suggest subscribing to get github notifications whenever there is a new release. For more information check: https://help.github.com/articles/managing-notifications-for-pushes-to-a-repository/
