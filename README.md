@@ -106,7 +106,7 @@ public class MyApplication extends Application {
 
 #### Enabling notifications
 In order to start displyaing notifications, notifications should be enabled via `TBNotificationManager#enable()` that can be obtained from `TaboolaPlus` class.
->##Notice
+> Notice:
 >Please consider the best location within your app code to enabled notifications, in order to make sure that notifications appear as soon as possible after device reboot.
 
 Once the notifications are enabled, they will continue to show and be updated periodically even if your app is not running.
