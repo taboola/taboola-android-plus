@@ -1,7 +1,7 @@
 # Taboola Recommendations Notification SDK (TaboolaPlus)
 ![Platform](https://img.shields.io/badge/Platform-Android-green.svg)
 [![License](https://img.shields.io/badge/License%20-Taboola%20SDK%20License-blue.svg)](https://github.com/taboola/taboola-android/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/Version%20-0.6.0-yellow.svg)](https://github.com/taboola/taboola-android/blob/master/LICENSE)
+[![Version](https://img.shields.io/badge/Version%20-0.7.0-yellow.svg)](https://github.com/taboola/taboola-android/blob/master/LICENSE)
 
 ## Table Of Contents
 1. [Getting Started](#1-getting-started)
@@ -25,7 +25,6 @@ the TaboolaPlus can be used in an app.
 * No special Android permissions required
 
 * Show recommendations from different content categories or choose a single "general" category to show the best and most interesting content for your users.
-
 * Users can scroll through the recommendations directly from the notification
 
 * Recommendations automatically update periodically (configurable)
@@ -53,7 +52,7 @@ the TaboolaPlus can be used in an app.
 * Add the library dependency to your project gradle file
 
   ```groovy
-    implementation 'com.taboola:android-sdk-plus:0.6.+'
+    implementation 'com.taboola:android-sdk-plus:0.7.+'
     ```
        
  TaboolaPlus has the following dependencies (added automatically)
@@ -65,11 +64,6 @@ the TaboolaPlus can be used in an app.
  implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
  implementation 'com.squareup.picasso:picasso:2.5.2'
   ```
- 
-* Include this line in your app’s `AndroidManifest.xml` to allow Internet access
- ```xml
- <uses-permission android:name="android.permission.INTERNET" />
- ```
 
 > ## Notice
 > We encourage developers to use the latest SDK version. In order to stay up-to-date we suggest subscribing to get github notifications whenever there is a new release. For more information check: https://help.github.com/articles/managing-notifications-for-pushes-to-a-repository/
@@ -83,47 +77,41 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        TaboolaPlus.getInstance()
-                .init(applicationContext, TABOOLA_CONFIG_JSON);
+        TaboolaPlus.init(getApplicationContext(), "<publisher-name>", "<config-id>");
     }
 }
  ```
  
- ```TABOOLA_CONFIG_JSON``` is a JSON string, which contains your specific Taboola configuration. 
- This JSON will be provided by your Taboola account manager. Please consult your account manager before making any changes in this JSON configuration.
- 
- **Example config JSON:**
-  
-  ```java
-{
-	"apiKey": "api-key",
-	"publisher": "publisher-id",
-	"configSetId": "config-set-id"
-}
-  ```
+ `<publisher-name>` and `<config-id>` strings will be provided by your Taboola account manager.
  
 ### 1.4 Controlling notifications
 
 #### Enabling notifications
-In order to start displyaing notifications, notifications should be enabled via `TBNotificationManager#enable()` that can be obtained from `TaboolaPlus` class.
-> Notice:
->Please consider the best location within your app code to enabled notifications, in order to make sure that notifications appear as soon as possible after device reboot.
+In order to start displaying notifications, notifications must be enabled via `TBNotificationManager#enable()` that can be obtained from `TaboolaPlus` object.
 
 Once the notifications are enabled, they will continue to show and be updated periodically even if your app is not running.
 
 ```java
- TaboolaPlus.getInstance()
-                    .getNotificationManager()
-                    .enable();
+        TaboolaPlus.getInitializedInstance(new TaboolaPlus.TaboolaPlusRetrievedCallback() {
+            @Override
+            public void onTaboolaPlusRetrieved(TaboolaPlus taboolaPlus) {
+                TBNotificationManager notificationManager = taboolaPlus.getNotificationManager();
+                notificationManager.enable();
+            }
+        });
 ```
 #### Disabling notifications
 You may choose to allow your user to disable the notification from a UI, such as your app settings screen.
 Run this code to disable notifications:
 
 ```java
- TaboolaPlus.getInstance()
-                    .getNotificationManager()
-                    .disable();
+        TaboolaPlus.getInitializedInstance(new TaboolaPlus.TaboolaPlusRetrievedCallback() {
+            @Override
+            public void onTaboolaPlusRetrieved(TaboolaPlus taboolaPlus) {
+                TBNotificationManager notificationManager = taboolaPlus.getNotificationManager();
+                notificationManager.disable();
+            }
+        });
 ```
 
 #### Setting categories for the notification
@@ -134,9 +122,9 @@ In order to show a mix of all content categories, set the "general" category.
 **Consult your Taboola account manager in order to enable category customiztion for your app**
 
 ```java
-ArrayList<Category> categories = new ArrayList<>();
-categories.add(new Category("general", "General", true));
-TaboolaPlus.getInstance().getNotificationManager().setCategories(categories);
+    ArrayList<String> categories = new ArrayList<>();
+    categories.add("general");
+    notificationManager.setCategories(categories);
 ```
 
 
@@ -152,19 +140,21 @@ Add the folowing intent filter in your app manifest to the activity that will ha
          </intent-filter>
 ```
 
-#### 1.5.1 Handling notification click manually in activity.
+#### 1.5.1 Handling notification click in activity.
 Tapping a notification will fire the ```com.taboola.android.plus.notification.NOTIFICATION_CLICK_EVENT``` intent,
 with the relevant data added as extras on the Intent object.
 Extras will contain `TBPlacement` that contains a list of `TBRecommendationItem` (same as in `TaboolaApi`)
 and the index of the item which was clicked. For more details on these objects please refer to `TaboolaApi` documentation
 
-`TBNotificationManager.handleClickIntent()` will perform intent validation and execute `TBRecommendationItem#handleClick()` to trigger the recommendation click flow.  see [Taboola SDK documentation](https://github.com/taboola/taboola-android-api) for more details about setting a click callback, or intercepting clicks.
+`TBNotificationManager.handleClickIntent()` will perform intent validation and execute `TBRecommendationItem#handleClick()` to trigger the recommendation click flow.  see [Taboola SDK documentation](https://github.com/taboola/taboola-android-api#19-intercepting-recommendation-clicks) for more details about setting a click callback, or intercepting clicks.
 
 ```java
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TBNotificationManager.handleClickIntent(intent);
+        if (savedInstanceState == null) { // avoid handling click again when activity is recreated
+            TBNotificationManager.handleClickIntent(intent);
+        }
     }
 
     @Override
