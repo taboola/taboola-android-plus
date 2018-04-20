@@ -1,8 +1,7 @@
 # Taboola Recommendations Notification SDK (TaboolaPlus)
 ![Platform](https://img.shields.io/badge/Platform-Android-green.svg)
 [![License](https://img.shields.io/badge/License%20-Taboola%20SDK%20License-blue.svg)](https://github.com/taboola/taboola-android/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/Version%20-0.7.0-yellow.svg)](https://github.com/taboola/taboola-android/blob/master/LICENSE)
-
+[![Version](https://api.bintray.com/packages/taboola-com/taboola-android-sdk/android-sdk-plus/images/download.svg) ](https://bintray.com/taboola-com/taboola-android-sdk/android-sdk-plus/_latestVersion)
 ## Table Of Contents
 1. [Getting Started](#1-getting-started)
 2. [Example Apps](#2-example-app)
@@ -53,16 +52,11 @@ the TaboolaPlus can be used in an app.
 
   ```groovy
     implementation 'com.taboola:android-sdk-plus:0.7.+'
-    ```
-       
- TaboolaPlus has the following dependencies (added automatically)
-
-  ```
- implementation 'com.taboola:android-sdk:2.0.+@aar'
- implementation 'com.android.support:customtabs:26.1.0'
- implementation 'com.squareup.retrofit2:retrofit:2.3.0'
- implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
- implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.taboola:android-sdk:2.0.+@aar'
+    implementation 'com.android.support:customtabs:26.1.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
   ```
 
 > ## Notice
