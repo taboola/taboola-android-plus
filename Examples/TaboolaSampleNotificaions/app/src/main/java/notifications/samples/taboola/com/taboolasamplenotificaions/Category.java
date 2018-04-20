@@ -14,10 +14,6 @@ public class Category implements Serializable{
         this.isEnable = isEnable;
     }
 
-    public Category() {
-
-    }
-
     public String getId() {
         return id;
     }

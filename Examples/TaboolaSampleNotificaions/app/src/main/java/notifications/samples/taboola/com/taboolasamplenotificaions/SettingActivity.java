@@ -2,6 +2,7 @@ package notifications.samples.taboola.com.taboolasamplenotificaions;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +10,11 @@ import android.widget.Switch;
 
 import com.taboola.android.api.TBPlacement;
 import com.taboola.android.api.TBRecommendationItem;
+import com.taboola.android.api.TaboolaApi;
 import com.taboola.android.plus.TaboolaPlus;
 import com.taboola.android.plus.notification.TBNotificationManager;
+
+import java.util.List;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -36,16 +40,16 @@ public class SettingActivity extends AppCompatActivity {
 
     private void initOnSwitchCheckedChangesListener() {
         switchAllowNotification.setChecked(appSettings.isAllowNotifications());
+
         switchAllowNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                TaboolaPlus.getInstance()
-                        .getNotificationManager()
-                        .enable();
-            } else {
-                TaboolaPlus.getInstance()
-                        .getNotificationManager()
-                        .disable();
-            }
+            TaboolaPlus.getInitializedInstance(taboolaPlus -> {
+                if (isChecked) {
+                    taboolaPlus.getNotificationManager().enable();
+                } else {
+                    taboolaPlus.getNotificationManager().disable();
+                }
+            });
+
             appSettings.setAllowNotifications(isChecked);
             AppSettingManager.updateAppSettings(this, appSettings);
         });
@@ -53,10 +57,10 @@ public class SettingActivity extends AppCompatActivity {
 
     private void initRecView() {
         recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this));
+
         adapter = new SettingCategoriesAdapter(appSettings.getCategories(), categories -> {
-            TaboolaPlus.getInstance()
-                    .getNotificationManager()
-                    .setCategories(AppSettingManager.getSelectedCategories(categories));
+            TaboolaPlus.getInitializedInstance(taboolaPlus -> taboolaPlus.getNotificationManager()
+                    .setCategories(AppSettingManager.getSelectedCategories(categories)));
 
             appSettings.setCategories(categories);
             AppSettingManager.updateAppSettings(SettingActivity.this, appSettings);
