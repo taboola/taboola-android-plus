@@ -57,6 +57,7 @@ the TaboolaPlus can be used in an app.
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
   ```
 
 > ## Notice
