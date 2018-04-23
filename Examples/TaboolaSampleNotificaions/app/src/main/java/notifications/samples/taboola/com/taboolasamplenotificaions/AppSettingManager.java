@@ -29,7 +29,7 @@ public class AppSettingManager {
             categories.add(new Category("entertainment", "Entertainment", false));
             categories.add(new Category("science", "Science", true));
 
-            AppSettings appSettings = new AppSettings(false, categories);
+            AppSettings appSettings = new AppSettings(true, categories);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(APP_SETTINGS_KEY, new Gson().toJson(appSettings));
             editor.apply();
@@ -45,7 +45,7 @@ public class AppSettingManager {
         editor.apply();
     }
 
-    public static List<String> getSelectedCategories(List<Category> categories) {
+    public static List<String> getSelectedCategoriesIds(List<Category> categories) {
         ArrayList<String> categoriesIds = new ArrayList<>();
         for (int i = 0; i < categories.size(); i++) {
             if (categories.get(i).isEnable()) {

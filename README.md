@@ -148,14 +148,14 @@ and the index of the item which was clicked. For more details on these objects p
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) { // avoid handling click again when activity is recreated
-            TBNotificationManager.handleClickIntent(intent);
+            TBNotificationManager.handleClickIntent(intent, activityContext);
         }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        TBNotificationManager.handleClickIntent(intent);
+        TBNotificationManager.handleClickIntent(intent, activityContext);
     }
 ```
 
