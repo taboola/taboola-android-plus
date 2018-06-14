@@ -22,6 +22,7 @@ public class AppSettingManager {
             return new Gson().fromJson(json, AppSettings.class);
         } else {
             ArrayList<Category> categories = new ArrayList<>();
+            categories.add(new Category("general", "General", true));
             categories.add(new Category("sport", "Sport", true));
             categories.add(new Category("news", "News", true));
             categories.add(new Category("business", "Business", true));
@@ -29,7 +30,7 @@ public class AppSettingManager {
             categories.add(new Category("entertainment", "Entertainment", false));
             categories.add(new Category("science", "Science", true));
 
-            AppSettings appSettings = new AppSettings(true, categories);
+            AppSettings appSettings = new AppSettings(false, categories);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(APP_SETTINGS_KEY, new Gson().toJson(appSettings));
             editor.apply();

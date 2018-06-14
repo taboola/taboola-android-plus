@@ -48,34 +48,49 @@ the TaboolaPlus can be used in an app.
 ### 1.2 Incorporating the SDK
 
 
-* Add the library dependency to your project gradle file
+Add the library dependency to your project gradle file
 
-  ```groovy
+```groovy
     implementation 'com.taboola:android-sdk-plus:0.7.+'
-    implementation 'com.taboola:android-sdk:2.0.+@aar'
+```
+
+ TaboolaPlus has the following dependencies (added automatically by gradle)
+
+```groovy
+    api 'com.taboola:android-sdk:2.0.+@aar'
     implementation 'com.android.support:customtabs:26.1.0'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-  ```
+```
 
 > ## Notice
 > We encourage developers to use the latest SDK version. In order to stay up-to-date we suggest subscribing to get github notifications whenever there is a new release. For more information check: https://help.github.com/articles/managing-notifications-for-pushes-to-a-repository/
 
 
 ### 1.3 Init TaboolaPlus
-Add the following initialization code your `Application` class. It's important to perform this initialization as early as possible during your app lifecyle, to make sure TaboolaPlus will be ready for action when you need it.
+Use the following code to initialize `TaboolaPlus`.
 
- ```java
-public class MyApplication extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        TaboolaPlus.init(getApplicationContext(), "<publisher-name>", "<config-id>");
-    }
-}
- ```
+```java
+TaboolaPlus.init("<publisher-name>", "<config-id>",
+        new TaboolaPlus.TaboolaPlusRetrievedCallback() { // use lambdas if your language level allows it
+            @Override
+            public void onTaboolaPlusRetrieved(TaboolaPlus taboolaPlus) {
+                TBNotificationManager tbNotificationManager = taboolaPlus.getNotificationManager();
+                // todo save tbNotificationManager (or taboolaPlus) object to use it later
+                // ideally, you should pass it to your dependency injection framework,
+                // but you can use any location on your preference, for example Application class
+            }
+        }, new TaboolaPlus.TaboolaPlusRetrieveFailedCallback() {
+            @Override
+            public void onTaboolaPlusRetrieveFailed(Throwable throwable) {
+                Log.e(TAG, "TaboolaPlus init failed");
+                // todo handle error
+            }
+        });
+
+
+```
  
  `<publisher-name>` and `<config-id>` strings will be provided by your Taboola account manager.
  
@@ -87,26 +102,14 @@ In order to start displaying notifications, notifications must be enabled via `T
 Once the notifications are enabled, they will continue to show and be updated periodically even if your app is not running.
 
 ```java
-        TaboolaPlus.getInitializedInstance(new TaboolaPlus.TaboolaPlusRetrievedCallback() {
-            @Override
-            public void onTaboolaPlusRetrieved(TaboolaPlus taboolaPlus) {
-                TBNotificationManager notificationManager = taboolaPlus.getNotificationManager();
-                notificationManager.enable();
-            }
-        });
+    tbNotificationManager.enable();
 ```
 #### Disabling notifications
 You may choose to allow your user to disable the notification from a UI, such as your app settings screen.
 Run this code to disable notifications:
 
 ```java
-        TaboolaPlus.getInitializedInstance(new TaboolaPlus.TaboolaPlusRetrievedCallback() {
-            @Override
-            public void onTaboolaPlusRetrieved(TaboolaPlus taboolaPlus) {
-                TBNotificationManager notificationManager = taboolaPlus.getNotificationManager();
-                notificationManager.disable();
-            }
-        });
+    tbNotificationManager.disable();
 ```
 
 #### Setting categories for the notification
@@ -119,9 +122,15 @@ In order to show a mix of all content categories, set the "general" category.
 ```java
     ArrayList<String> categories = new ArrayList<>();
     categories.add("general");
-    notificationManager.setCategories(categories);
+    tbNotificationManager.setCategories(categories);
 ```
 
+#### Optional customisations
+`TBNotificationManager` has a set for methods to customise notifications:
+
+* `setNotificationIcon(int iconId)` - Sets an icon to be displayed as an application icon in the notification. If not set, application's icon will be used.
+* `setApplicationName(String applicationName)` - Sets an application name to be displayed in the notification.If not set in code, the actual app name will be used. (Note: Application name can be overriden in remote config file)
+* `setIsWifiOnlyMode(boolean isWifiOnlyMode)` - If enabled, new content will only be loaded over Wifi
 
 ### 1.5 Handling notification click event
 Add the folowing intent filter in your app manifest to the activity that will handle clicks.
