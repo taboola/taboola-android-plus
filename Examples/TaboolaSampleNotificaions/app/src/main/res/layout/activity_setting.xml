@@ -49,7 +49,7 @@
         android:layout_marginRight="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="25dp"
-        android:checked="true"
+        android:enabled="false"
         android:text="@string/allow_notifications"
         android:textSize="18sp" />
 
@@ -62,6 +62,7 @@
         android:background="@color/colorPrimaryDark" />
 
     <TextView
+        android:id="@+id/tv_categories_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -69,7 +70,8 @@
         android:fontFamily="sans-serif-medium"
         android:text="@string/chose_categories"
         android:textSize="18sp"
-        android:textStyle="normal" />
+        android:textStyle="normal"
+        android:visibility="invisible" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rec_view"
