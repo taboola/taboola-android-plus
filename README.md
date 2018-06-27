@@ -168,6 +168,38 @@ and the index of the item which was clicked. For more details on these objects p
     }
 ```
 
+### 1.6 Restart App on phone reboot
+To be able launch app on phone boot completed, we recommend you implementing this 3 simple steps.
+
+1. Add permission to manifest
+```xml
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+```
+
+2. Create broadcast receiver that will start app when message received
+```java
+    public class PhoneBootedReceiver extends BroadcastReceiver {
+       @Override
+       public void onReceive(Context context, Intent intent) {
+            startApp();
+       }
+    
+       private void startApp(){
+           //launch you app
+       }
+    }
+```
+
+3. Register broadcast receiver in the manifest file with filter to listen phone reboot
+```xml
+    <receiver android:name=".PhoneBootedReceiver">
+       <intent-filter>
+           <action android:name="android.intent.action.BOOT_COMPLETED" />
+       </intent-filter>
+    </receiver>
+```
+
+
 ## 2. Example App
 This repository includes an example Android app which uses the `TaboolaPlus`. 
 
