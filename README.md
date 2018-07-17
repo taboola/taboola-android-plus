@@ -105,7 +105,7 @@ Once the notifications are enabled, they will continue to show and be updated pe
     tbNotificationManager.enable();
 ```
 #### Disabling notifications
-You may choose to allow your user to disable the notification from a UI, such as your app settings screen.
+You may choose to allow the user to disable the notification from UI, such as your app settings screen.
 Run this code to disable notifications:
 
 ```java
@@ -169,14 +169,14 @@ and the index of the item which was clicked. For more details on these objects p
 ```
 
 ### 1.6 Restart App on phone reboot
-To be able launch app on phone boot completed, we recommend you implementing this 3 simple steps.
+To be able launch app on phone boot completed, we recommend you to implement these 3 simple steps.
 
 1. Add permission to manifest
 ```xml
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 ```
 
-2. Create broadcast receiver that will start app when message received
+2. Create broadcast receiver that will start the app when the message is received
 ```java
     public class PhoneBootedReceiver extends BroadcastReceiver {
        @Override
@@ -190,7 +190,7 @@ To be able launch app on phone boot completed, we recommend you implementing thi
     }
 ```
 
-3. Register broadcast receiver in the manifest file with filter to listen phone reboot
+3. Register broadcast receiver in the manifest file with filter to listen to the phone reboot
 ```xml
     <receiver android:name=".PhoneBootedReceiver">
        <intent-filter>
@@ -213,5 +213,5 @@ The recommended next steps would be:
 TBD
 
 ## 4. License
-This program is licensed under the Taboola, Inc. SDK License Agreement (the “License Agreement”).  By copying, using or redistributing this program, you agree to the terms of the License Agreement.  The full text of the license agreement can be found at [https://github.com/taboola/taboola-android/blob/master/LICENSE](https://github.com/taboola/taboola-android/blob/master/LICENSE).
+This program is licensed under the Taboola, Inc. SDK License Agreement (the “License Agreement”).  By copying, using or redistributing this program, you agree with the terms of the License Agreement.  The full text of the license agreement can be found at [https://github.com/taboola/taboola-android/blob/master/LICENSE](https://github.com/taboola/taboola-android/blob/master/LICENSE).
 Copyright 2017 Taboola, Inc.  All rights reserved.
