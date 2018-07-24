@@ -36,9 +36,9 @@ public class SettingActivity extends AppCompatActivity {
 
         appSettings = AppSettingManager.getAppSettings(this);
 
+        initTaboolaSdkPlus();
         initNotificationClickHandling();
-        initTaboolaSdkPLus();
-
+        
         if (savedInstanceState == null) {
             TBNotificationManager.handleClick(getIntent(), this);
         }
@@ -61,7 +61,7 @@ public class SettingActivity extends AppCompatActivity {
         });
     }
 
-    private void initTaboolaSdkPLus() {
+    private void initTaboolaSdkPlus() {
         TaboolaPlus.init("taboola-reader-app", "conf1",
                 taboolaPlus -> {
                     Log.d(TAG, "onTaboolaPlusRetrieved()");
