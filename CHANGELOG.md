@@ -1,6 +1,10 @@
 # Change Log
 
 
+## [0.9.5] - 2018-07-31
+### Fixed
+- Memory leak related to content auto-switch
+
 ## [0.9.4] - 2018-07-25
 ### Changed
 - Dismiss previous notification even if no items were returned for next notification refresh
