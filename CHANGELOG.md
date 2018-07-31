@@ -1,6 +1,44 @@
 # Change Log
 
 
+## [0.9.4] - 2018-07-25
+### Changed
+- Dismiss previous notification even if no items were returned for next notification refresh
+
+### Fixed
+- Notification refreshing before refresh interval have passed
+- Prevent auto switching content after it was already deleted
+- Send render event for items with hint
+
+## [0.9.3] - 2018-07-24
+### Added
+- send analytics for a configurable fraction of users
+
+### Changed
+- Send "available" and "visible" events on notification dismiss
+- Use new timestamp pattern for analytics
+
+## [0.9.2] - 2018-07-24
+### Added
+- ResponseItemCount property to contentRefresh event
+
+### Changed
+- Treat empty content as a successful response
+- Use a dynamic dependency version for TaboolaApi
+
+### Fixed
+- Requests to Kibana
+
+## [0.9.1] - 2018-07-23
+### Added
+- EmptyContentFromRemote analytics event
+
+### Changed
+- Use Taboola SDK 2.0.22
+
+### Fixed
+- Hide arrows if only one item was fetched (not just after deletion)
+
 ## [0.9.0] - 2018-07-16
 ### Added
 - Config expiration time
