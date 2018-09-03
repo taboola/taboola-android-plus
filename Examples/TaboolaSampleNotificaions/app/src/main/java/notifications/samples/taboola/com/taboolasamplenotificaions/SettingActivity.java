@@ -37,8 +37,7 @@ public class SettingActivity extends AppCompatActivity {
         appSettings = AppSettingManager.getAppSettings(this);
 
         initTaboolaSdkPlus();
-        initNotificationClickHandling();
-        
+
         if (savedInstanceState == null) {
             TBNotificationManager.handleClick(getIntent(), this);
         }
@@ -50,21 +49,11 @@ public class SettingActivity extends AppCompatActivity {
         TBNotificationManager.handleClick(intent, this);
     }
 
-    private void initNotificationClickHandling() {
-        TaboolaApi.getInstance().setOnClickListener((placementName, itemId, clickUrl, isOrganic) -> {
-            if (isOrganic) {
-                //TODO your click implementation
-                return false;
-            } else {
-                return true;
-            }
-        });
-    }
-
     private void initTaboolaSdkPlus() {
         TaboolaPlus.init("taboola-reader-app", "conf1",
                 taboolaPlus -> {
                     Log.d(TAG, "onTaboolaPlusRetrieved()");
+                    initNotificationClickHandling();
                     notificationManager = taboolaPlus.getNotificationManager();
 
                     setLastUsedSettings();
@@ -75,6 +64,17 @@ public class SettingActivity extends AppCompatActivity {
                     Log.e(TAG, "initTaboolaSdkPLus: " + throwable.getMessage(), throwable);
                     // todo handle init fail
                 });
+    }
+
+    private void initNotificationClickHandling() {
+        TaboolaApi.getInstance().setOnClickListener((placementName, itemId, clickUrl, isOrganic) -> {
+            if (isOrganic) {
+                //TODO your click implementation
+                return false;
+            } else {
+                return true;
+            }
+        });
     }
 
     private void setLastUsedSettings() {
