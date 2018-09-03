@@ -1,6 +1,21 @@
 # Change Log
 
 
+## [0.10.0] - Unreleased
+### Added
+- Read more tip (item that leads to the app without opening a story)
+- Support for config A/B testing
+- Sending analytics to TRC
+
+### Changed
+- Don't fetch notification content if notifications are blocked by user
+- SDK+ config is updated on each notification refresh job run
+- Using config v1.2
+
+### Fixed
+- Crash on application update
+- Other minor bugs
+
 ## [0.9.5] - 2018-07-31
 ### Fixed
 - Memory leak related to content auto-switch
