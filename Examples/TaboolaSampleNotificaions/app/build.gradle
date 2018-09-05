@@ -24,11 +24,11 @@ android {
 
 dependencies {
 
-    // SDK+ dependency
-    implementation(name: 'TaboolaSdkPlus-0.10.0-snapshot-5f4a177-release2', ext: 'aar')
+    // Taboola SDK+
+    implementation 'com.taboola:android-sdk-plus:0.10.1'
 
     // Taboola SDK API
-    implementation 'com.taboola:android-sdk-beta:2.0.25-SNAPSHOT-34978-20@aar'
+    implementation 'com.taboola:android-sdk:2.0.26'
     implementation 'com.android.support:customtabs:27.1.1'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
