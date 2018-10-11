@@ -1,7 +1,18 @@
 # Change Log
 
 
-## [0.10.0] - Unreleased
+## [0.10.2] - 2018-09-21
+### Fixed
+- Internal bugs
+
+## [0.10.1] - 2018-09-05
+### Added
+- More analytics events
+
+### Changed
+- Getting sim country from TaboolaApi
+
+## [0.10.0] - 2018-09-04
 ### Added
 - Read more tip (item that leads to the app without opening a story)
 - Support for config A/B testing
