@@ -214,7 +214,9 @@ The recommended next steps would be:
 TBD
 
 ## 4. ProGuard
-You can find proguard rules for Taboola in [proguard-taboola-api.pro](/Examples/Article-Page-4-Items-Bottom/app/proguard-taboola-api.pro) file.
+You can find proguard rules for Taboola sdk plus in [proguard-taboola-api.pro](https://github.com/taboola/taboola-android/blob/master/app/proguard-taboola-widget.pro) file.
+If you are using TaboolaWidget, you can find proguard rules for Taboola Widget in [proguard-taboola-widget.pro](app/proguard-taboola-widget.pro) file.
+
 The file contains instructions to the rules which you should use depending on which parts of the SDK you are using (you should comment/uncomment which you need).
 
 ## 5. License
