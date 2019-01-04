@@ -95,6 +95,9 @@ TaboolaPlus.init("<publisher-name>", "<config-id>",
  
  `<publisher-name>` and `<config-id>` strings will be provided by your Taboola account manager.
  
+> ## Notice
+> Please make sure to initilize the SDK before invoking any `getInstance` function anywhere in your code
+
 ### 1.4 Controlling notifications
 
 #### Enabling notifications
