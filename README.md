@@ -6,8 +6,9 @@
 1. [Getting Started](#1-getting-started)
 2. [Example Apps](#2-example-app)
 3. [SDK Reference](#3-sdk-reference)
-4. [Proguard](#4-proguard)
-5. [License](#5-license)
+4. [Home Screen News](#4-home-Screen-news)
+5. [Proguard](#5-proguard)
+6. [License](#6-license)
 
 ## Introduction
 Taboola SDK Plus allows you to display Taboola recommendations in an Android notification from your app.
@@ -216,13 +217,78 @@ The recommended next steps would be:
 ## 3. SDK Reference
 TBD
 
-## 4. ProGuard
+## 4. Home Screen News
+### 4.1 Init Home Screen News manager
+You have to init Home Screen News manager in order to use this feature.
+(It is inited independently from TaboolaPlus)
+```java
+ TBHomeScreenNewsManager.getInstance().init(this);
+```
+
+### 4.2 Implement home screen reciever
+You have to implement broadcast reciever in order to know when you should run your Home Screen News activity (action = `com.taboola.android.plus.homeScreen.OPEN_HOME_SCREEN`).
+``` java
+public class HomeScreenNewsReceiver extends BroadcastReceiver {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+            //run home screen activity
+            HomeScreenNewsActivity.launch(context);
+    }
+}
+```
+Add to manifest in application scope
+```xml
+        <receiver
+            android:name=".HomeScreenNewsReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.taboola.android.plus.homeScreen.OPEN_HOME_SCREEN" />
+            </intent-filter>
+        </receiver>
+```
+### 4.3 Report home screen opened
+You have to report when you will open home screen activity.
+```java
+public class HomeScreenNewsActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home_screen_news);
+        // If home screen opened successfully
+        TBHomeScreenNewsManager.getInstance().reportHomeScreenOpened();
+    }
+}
+````
+### 4.4 Enable/disable home screen
+In order to enable/disable home screen you have to call:
+```java
+        //to enable
+        TBHomeScreenNewsManager.getInstance().setHomeScreenEnabled(true);
+        //to disable
+        TBHomeScreenNewsManager.getInstance().setHomeScreenEnabled(false);
+```
+### 4.5 Check if home screen initialized
+Check if TBHomeScreenNewsManager initialized, true - initialized, false - not initialized.
+```java
+TBHomeScreenNewsManager.getInstance().isInitialized();
+```
+
+### 4.6 Check if home screen enabled
+Check if home screen enabled, true - enabled, false - not enabled
+```java
+TBHomeScreenNewsManager.getInstance().isHomeScreenEnabled();
+```
+
+
+## 5. ProGuard
 You can find proguard rules for Taboola sdk plus in [proguard-taboola-api.pro](https://github.com/taboola/taboola-android-api/blob/master/Examples/Article-Page-4-Items-Bottom/app/proguard-taboola-api.pro) file.
 
 If you are also using TaboolaWidget, you can find proguard rules for Taboola Widget in [proguard-taboola-widget.pro](https://github.com/taboola/taboola-android/blob/master/app/proguard-taboola-widget.pro) file.
 
 The file contains instructions to the rules which you should use depending on which parts of the SDK you are using (you should comment/uncomment which you need).
 
-## 5. License
+## 6. License
 This program is licensed under the Taboola, Inc. SDK License Agreement (the “License Agreement”).  By copying, using or redistributing this program, you agree with the terms of the License Agreement.  The full text of the license agreement can be found at [https://github.com/taboola/taboola-android/blob/master/LICENSE](https://github.com/taboola/taboola-android/blob/master/LICENSE).
 Copyright 2017 Taboola, Inc.  All rights reserved.
