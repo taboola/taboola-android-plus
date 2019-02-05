@@ -53,17 +53,20 @@ the TaboolaPlus can be used in an app.
 Add the library dependency to your project gradle file
 
 ```groovy
-    implementation 'com.taboola:android-sdk-plus:0.7.+'
+    implementation 'com.taboola:android-sdk-plus:1.0.4'
 ```
 
  TaboolaPlus has the following dependencies (added automatically by gradle)
 
 ```groovy
-    api 'com.taboola:android-sdk:2.0.+@aar'
-    implementation 'com.android.support:customtabs:26.1.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    api('com.taboola:android-sdk:2.1.0') {
+        exclude group: 'com.android.support', module: 'customtabs'
+        exclude group: 'com.android.support', module: 'support-v4'
+    }
+    compileOnly 'com.android.support:customtabs:27.1.1'
+    compileOnly 'com.squareup.retrofit2:retrofit:2.3.0'
+    compileOnly 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compileOnly 'com.squareup.picasso:picasso:2.5.2'
 ```
 
 > ## Notice
@@ -162,14 +165,14 @@ and the index of the item which was clicked. For more details on these objects p
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) { // avoid handling click again when activity is recreated
-            TBNotificationManager.handleClickIntent(intent, activityContext);
+             TBNotificationManager.handleClick(getIntent(), this);
         }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        TBNotificationManager.handleClickIntent(intent, activityContext);
+         TBNotificationManager.handleClick(intent, this);
     }
 ```
 
@@ -222,7 +225,7 @@ TBD
 You have to init Home Screen News manager in order to use this feature.
 (It is inited independently from TaboolaPlus)
 ```java
- TBHomeScreenNewsManager.getInstance().init(this);
+ TBHomeScreenNewsManager.getInstance().init();
 ```
 
 ### 4.2 Implement home screen reciever
