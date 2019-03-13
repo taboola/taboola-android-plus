@@ -2,6 +2,7 @@ package com.taboola.samples.endlessfeed;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,6 +24,10 @@ import com.taboola.android.api.TBRecommendationsResponse;
 import com.taboola.android.api.TaboolaApi;
 import com.taboola.android.plus.homeScreenNews.TBHomeScreenNewsManager;
 import com.taboola.android.plus.notification.TBNotificationManager;
+import com.taboola.samples.endlessfeed.sampleUtil.DemoItem;
+import com.taboola.samples.endlessfeed.sampleUtil.EndlessScrollListener;
+import com.taboola.samples.endlessfeed.sampleUtil.FeedAdapter;
+import com.taboola.samples.endlessfeed.sampleUtil.UrlOpenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +42,14 @@ public class MainActivity extends AppCompatActivity {
     public static void launch(Context context, String key) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(key, key);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void launchWithUrl(Context context, String homeScreenKey, String urlToOpen) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(homeScreenKey, homeScreenKey);
+        intent.putExtra(TBHomeScreenNewsManager.HOME_SCREEN_URL_TO_OPEN, urlToOpen);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
@@ -43,16 +57,41 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Checking if the activity was opened by HSN or regular app start
-        if (getIntent().hasExtra(HomeScreenReceiver.HOME_SCREEN_KEY)) {
-            // If Home Screen News opened successfully send "HomeScreenDisplayed"
-            TBHomeScreenNewsManager.getInstance().reportHomeScreenOpened();
-        }
 
         if (savedInstanceState == null) {
             // Avoid handling click again when activity is recreated
             TBNotificationManager.handleClick(getIntent(), this);
         }
+
+        handleHnsIntent();
+        initLayout();
+        fetchTaboolaRecommendations();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // Handling notification click
+        TBNotificationManager.handleClick(intent, this);
+    }
+
+    private void handleHnsIntent() {
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences(SettingsActivity.PREFS_NAME,
+                MODE_PRIVATE);
+
+        if (getIntent().hasExtra(HomeScreenReceiver.HOME_SCREEN_KEY)) {
+            if (pref.getBoolean(SettingsActivity.SHOULD_HANDLE_URL, false)) { // can be disabled by sample app
+                String url = getIntent().getStringExtra(TBHomeScreenNewsManager.HOME_SCREEN_URL_TO_OPEN);
+                if (!TextUtils.isEmpty(url)) {
+                    UrlOpenUtil.openUrlInTabsOrBrowser(this, url);
+                } // else just open feed
+            }
+            // If Home Screen News opened successfully notify the SDK+
+            TBHomeScreenNewsManager.getInstance().reportHomeScreenOpened();
+        }
+    }
+
+    private void initLayout() {
         setContentView(R.layout.activity_main);
         FloatingActionButton settingsFab = findViewById(R.id.setting_fab);
         settingsFab.setOnClickListener(new View.OnClickListener() {
@@ -76,12 +115,13 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mAdapter);
         snackbar = Snackbar.make(mRecyclerView, "Waiting for network", Snackbar.LENGTH_INDEFINITE);
         snackbar.show();
-        fetchTaboolaRecommendations();
     }
 
     public void onAttributionClick(View view) {
         TaboolaApi.getInstance().handleAttributionClick(this);
     }
+
+    // region feed related logic
 
     private void onRecommendationsFetched(TBPlacement placement) {
         placement.prefetchThumbnails();
@@ -164,10 +204,5 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        // Handling notification click
-        TBNotificationManager.handleClick(intent, this);
-    }
+    // endregion
 }

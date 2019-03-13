@@ -1,6 +1,6 @@
-package com.taboola.samples.endlessfeed;
+package com.taboola.samples.endlessfeed.sampleUtil;
 
-class DemoItem {
+public class DemoItem {
     private Integer mImageResourceId;
     private String mText;
 

@@ -1,4 +1,4 @@
-package com.taboola.samples.endlessfeed;
+package com.taboola.samples.endlessfeed.sampleUtil;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,10 +9,11 @@ import android.widget.TextView;
 
 import com.taboola.android.api.TBImageView;
 import com.taboola.android.api.TBRecommendationItem;
+import com.taboola.samples.endlessfeed.R;
 
 import java.util.List;
 
-class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int TYPE_DEMO = 0;
     private final int TYPE_TABOOLA = 1;
 

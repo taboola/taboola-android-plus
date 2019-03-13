@@ -21,7 +21,7 @@ android {
 
 dependencies {
     // Taboola SDK+
-    implementation 'com.taboola:android-sdk-plus:1.0.4'
+    implementation(name: 'TaboolaSdkPlus-1.0.5-beta1-cdnConfig-release', ext: 'aar')
 
     // SDK dependencies
     implementation 'com.taboola:android-sdk:2.1.2'

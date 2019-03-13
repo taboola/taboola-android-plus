@@ -1,9 +1,9 @@
-package com.taboola.samples.endlessfeed;
+package com.taboola.samples.endlessfeed.sampleUtil;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-abstract class EndlessScrollListener extends RecyclerView.OnScrollListener {
+public abstract class EndlessScrollListener extends RecyclerView.OnScrollListener {
     // The current offset index of data you have loaded
     private int currentPage = 0;
     // The total number of items in the dataset after the last load

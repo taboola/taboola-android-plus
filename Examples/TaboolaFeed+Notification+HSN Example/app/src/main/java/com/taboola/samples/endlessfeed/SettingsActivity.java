@@ -2,6 +2,7 @@ package com.taboola.samples.endlessfeed;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 public class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = SettingsActivity.class.getSimpleName();
+    public static final String PREFS_NAME = "PREFS_NAME" ;
+    public static final String SHOULD_HANDLE_URL = "should_handle_url";
 
     private TBNotificationManager notificationManager;
     private Switch allowNotificationSwitch;
@@ -42,9 +45,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void initLayout() {
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         setContentView(R.layout.activity_settings);
         allowNotificationSwitch = findViewById(R.id.notification_switch);
         Switch allowHomeScreenSwitch = findViewById(R.id.hsn_switch);
+        Switch urlSwitch = findViewById(R.id.url_switch);
+        urlSwitch.setChecked(pref.getBoolean(SHOULD_HANDLE_URL, false));
+
 
         allowNotificationSwitch.setEnabled(false);
         allowNotificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -70,6 +77,15 @@ public class SettingsActivity extends AppCompatActivity {
                 TBHomeScreenNewsManager.getInstance().setHomeScreenEnabled(isChecked);
             }
         });
+
+        urlSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               pref.edit().putBoolean(SHOULD_HANDLE_URL, isChecked).apply();
+            }
+        });
+
+
     }
 
     private void showSnackBar() {

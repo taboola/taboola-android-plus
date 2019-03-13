@@ -14,4 +14,5 @@
     <string name="hsn_hint">When HSN is enabled, minimize or kill this app and wait ~90 seconds</string>
     <string name="enable_notification">Enable notification</string>
     <string name="enable_home_screen">Enable Home Screen</string>
+    <string name="url_handling">Should handle url opening </string>
 </resources>
