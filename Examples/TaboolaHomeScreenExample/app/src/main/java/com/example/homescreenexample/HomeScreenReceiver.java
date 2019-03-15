@@ -9,7 +9,7 @@ import com.taboola.android.plus.homeScreenNews.TBHomeScreenNewsManager;
 public class HomeScreenReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-            //launch your screen
-            HomeScreenActivity.launch(context);
+            //launch your HSN activity
+            HomeScreenActivity.launch(context, intent.getExtras());
     }
 }

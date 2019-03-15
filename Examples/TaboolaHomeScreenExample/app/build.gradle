@@ -22,7 +22,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Taboola SDK+
-    implementation 'com.taboola:android-sdk-plus:1.0.4'
+    implementation 'com.taboola:android-sdk-plus:1.0.5'
 
     // SDK dependencies
     implementation 'com.taboola:android-sdk:2.1.2'

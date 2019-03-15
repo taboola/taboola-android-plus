@@ -2,25 +2,22 @@ package com.example.homescreenexample;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.taboola.android.plus.homeScreenNews.TBHomeScreenNewsManager;
-import com.taboola.android.utils.OnClickHelper;
+
+import static com.taboola.android.plus.homeScreenNews.TBHomeScreenNewsManager.HOME_SCREEN_PLACEMENT_TO_OPEN;
+import static com.taboola.android.plus.homeScreenNews.TBHomeScreenNewsManager.HOME_SCREEN_URL_TO_OPEN;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
-    private static final String TAG = HomeScreenActivity.class.getSimpleName();
-
-    public static void launch(Context context) {
+    public static void launch(Context context, Bundle extras) {
         Intent intent = new Intent(context, HomeScreenActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtras(extras);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
 
@@ -28,7 +25,27 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen_activity);
+        handleHsnIntentExtras(getIntent().getExtras());
+
         // If Home Screen News opened successfully send "HomeScreenDisplayed"
         TBHomeScreenNewsManager.getInstance().reportHomeScreenOpened();
+    }
+
+    void handleHsnIntentExtras(Bundle extras) {
+        String urlToOpen = extras.getString(HOME_SCREEN_URL_TO_OPEN);
+        String placementToOpen = extras.getString(HOME_SCREEN_PLACEMENT_TO_OPEN);
+        if (TextUtils.isEmpty(urlToOpen) && TextUtils.isEmpty(placementToOpen)) {
+            // just open your HSN activity
+            return;
+        }
+
+        if (!TextUtils.isEmpty(urlToOpen)){
+            // TODO handle url opening your way
+            UrlOpenUtil.openUrlInTabsOrBrowser(getApplicationContext(), urlToOpen);
+        }
+
+        if (!TextUtils.isEmpty(placementToOpen)){
+            // TODO IMPORTANT: if placement isn't empty you must use it on HSN for correct reporting
+        }
     }
 }

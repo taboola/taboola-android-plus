@@ -31,6 +31,9 @@ public class SettingCategoriesViewHolder extends RecyclerView.ViewHolder {
         cbAllowCategory.setOnCheckedChangeListener(null);
         cbAllowCategory.setText(category.getName());
         cbAllowCategory.setChecked(category.isEnable());
+        if(category.getName().equals("General")){
+            cbAllowCategory.setEnabled(false);
+        }
         initOnChangeListener();
     }
 

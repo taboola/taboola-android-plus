@@ -236,7 +236,10 @@ public class HomeScreenNewsReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
             //run home screen activity
-            HomeScreenNewsActivity.launch(context);
+             Intent hsnIntent = new Intent(context, HomeScreenActivity.class);
+             hsnIntent.putExtras(intent.getExtras());
+             hsnIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+             context.startActivity(hsnIntent);
     }
 }
 ```
@@ -250,7 +253,7 @@ Add to manifest in application scope
             </intent-filter>
         </receiver>
 ```
-### 4.3 Report home screen opened
+#### 4.2.1 Report home screen opened
 You have to report when you will open home screen activity.
 ```java
 public class HomeScreenNewsActivity extends AppCompatActivity {
@@ -259,11 +262,33 @@ public class HomeScreenNewsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen_news);
-        // If home screen opened successfully
-        TBHomeScreenNewsManager.getInstance().reportHomeScreenOpened();
+       
+        TBHomeScreenNewsManager.getInstance().reportHomeScreenOpened();  // If home screen opened successfully
+        handleHsnIntentExtras(getIntent().getExtras());
     }
 }
 ````
+### 4.3 Handle HSN extras
+You also have an ability to send a custom URL by the HSN to open it.
+If HSN was triggered and you were using placements on this screen to get data you must update placement for correct reporting.
+``` java
+  void handleHsnIntentExtras(Bundle extras) {
+          String urlToOpen = extras.getString(HOME_SCREEN_URL_TO_OPEN);
+          String placementToOpen = extras.getString(HOME_SCREEN_PLACEMENT_TO_OPEN);
+          if (TextUtils.isEmpty(urlToOpen) && TextUtils.isEmpty(placementToOpen)) {
+              // just open your HSN activity
+              return;
+          }
+  
+          if (!TextUtils.isEmpty(urlToOpen)){
+              // TODO handle url opening your way
+          }
+  
+          if (!TextUtils.isEmpty(placementToOpen)){
+              // TODO IMPORTANT: if placement isn't empty you must use it on HSN for correct reporting
+          }
+      }
+```
 ### 4.4 Enable/disable home screen
 In order to enable/disable home screen you have to call:
 ```java
