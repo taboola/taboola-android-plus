@@ -32,24 +32,21 @@ import com.taboola.samples.endlessfeed.sampleUtil.UrlOpenUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.taboola.android.plus.homeScreenNews.TBHomeScreenNewsManager.HOME_SCREEN_PLACEMENT_TO_OPEN;
+import static com.taboola.android.plus.homeScreenNews.TBHomeScreenNewsManager.HOME_SCREEN_URL_TO_OPEN;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private Snackbar snackbar;
     private RecyclerView.Adapter mAdapter;
     private TBPlacement mPlacement;
     private final List<Object> mData = new ArrayList<>();
+    private String placementName = "list_item";
 
-    public static void launch(Context context, String key) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(key, key);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
-    public static void launchWithUrl(Context context, String homeScreenKey, String urlToOpen) {
+    public static void launch(Context context, String homeScreenKey, Bundle extras) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(homeScreenKey, homeScreenKey);
-        intent.putExtra(TBHomeScreenNewsManager.HOME_SCREEN_URL_TO_OPEN, urlToOpen);
+        intent.putExtras(extras);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
@@ -63,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             TBNotificationManager.handleClick(getIntent(), this);
         }
 
-        handleHnsIntent();
+        handleHnsIntent(getIntent().getExtras());
         initLayout();
         fetchTaboolaRecommendations();
     }
@@ -75,19 +72,32 @@ public class MainActivity extends AppCompatActivity {
         TBNotificationManager.handleClick(intent, this);
     }
 
-    private void handleHnsIntent() {
+    private void handleHnsIntent(Bundle extras) {
         final SharedPreferences pref = getApplicationContext().getSharedPreferences(SettingsActivity.PREFS_NAME,
                 MODE_PRIVATE);
-
         if (getIntent().hasExtra(HomeScreenReceiver.HOME_SCREEN_KEY)) {
-            if (pref.getBoolean(SettingsActivity.SHOULD_HANDLE_URL, false)) { // can be disabled by sample app
-                String url = getIntent().getStringExtra(TBHomeScreenNewsManager.HOME_SCREEN_URL_TO_OPEN);
-                if (!TextUtils.isEmpty(url)) {
-                    UrlOpenUtil.openUrlInTabsOrBrowser(this, url);
-                } // else just open feed
-            }
             // If Home Screen News opened successfully notify the SDK+
             TBHomeScreenNewsManager.getInstance().reportHomeScreenOpened();
+
+            String urlToOpen = extras.getString(HOME_SCREEN_URL_TO_OPEN);
+            String placementToOpen = extras.getString(HOME_SCREEN_PLACEMENT_TO_OPEN);
+
+            if (TextUtils.isEmpty(urlToOpen) && TextUtils.isEmpty(placementToOpen)) {
+                // just open your HSN activity
+                return;
+            }
+
+            if (pref.getBoolean(SettingsActivity.SHOULD_HANDLE_URL, false)) { // can be disabled by sample app
+                if (!TextUtils.isEmpty(urlToOpen)) {
+                    // handle url opening your way
+                    UrlOpenUtil.openUrlInTabsOrBrowser(getApplicationContext(), urlToOpen);
+                }
+            }
+
+            if (!TextUtils.isEmpty(placementToOpen)) {
+                // TODO IMPORTANT: if placement isn't empty you must use it on HSN for correct reporting
+                placementName = placementToOpen;
+            }
         }
     }
 
@@ -162,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchTaboolaRecommendations() {
-        final String placementName = "list_item";
         Point screenSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(screenSize);
 

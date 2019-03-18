@@ -25,10 +25,10 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen_activity);
+        // If Home Screen News opened successfully notify the SDK+
+        TBHomeScreenNewsManager.getInstance().reportHomeScreenOpened();
         handleHsnIntentExtras(getIntent().getExtras());
 
-        // If Home Screen News opened successfully send "HomeScreenDisplayed"
-        TBHomeScreenNewsManager.getInstance().reportHomeScreenOpened();
     }
 
     void handleHsnIntentExtras(Bundle extras) {
