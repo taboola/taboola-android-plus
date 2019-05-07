@@ -53,13 +53,13 @@ the TaboolaPlus can be used in an app.
 Add the library dependency to your project gradle file
 
 ```groovy
-    implementation 'com.taboola:android-sdk-plus:1.0.4'
+    implementation 'com.taboola:android-sdk-plus:1.0.6'
 ```
 
  TaboolaPlus has the following dependencies (added automatically by gradle)
 
 ```groovy
-    api('com.taboola:android-sdk:2.1.0') {
+    api('com.taboola:android-sdk:2.2.0') {
         exclude group: 'com.android.support', module: 'customtabs'
         exclude group: 'com.android.support', module: 'support-v4'
     }
