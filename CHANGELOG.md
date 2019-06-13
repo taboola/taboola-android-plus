@@ -1,5 +1,25 @@
 # Change Log
 
+## [1.1.0] - 17.07.19
+### Added
+- Server response validation
+- Analytics improvements 
+
+### Fixed
+- internal bugs
+
+## [1.0.7] - 03.06.19
+### Added
+- User engagement groups
+
+### Changed
+- Improved offline experience
+- Improved exception handling
+
+## [1.0.6] - 25.03.19
+### Fixed
+- Internal bugs
+
 ## [1.0.5] - 2019-03-14
 ### Added
 - Open url and / or  placement by HSN
