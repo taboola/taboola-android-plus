@@ -1,7 +1,7 @@
 # Taboola Recommendations Notification SDK (TaboolaPlus)
 ![Platform](https://img.shields.io/badge/Platform-Android-green.svg)
 [![License](https://img.shields.io/badge/License%20-Taboola%20SDK%20License-blue.svg)](https://github.com/taboola/taboola-android/blob/master/LICENSE)
-Stable version: 1.2.2
+[ ![Download](https://api.bintray.com/packages/taboola-com/taboola-android-sdk/android-sdk-plus/images/download.svg?version=1.2.2) ](https://bintray.com/taboola-com/taboola-android-sdk/android-sdk-plus/1.2.2/link)
 ## Table Of Contents
 1. [Getting Started](#1-getting-started)
 2. [Example Apps](#2-example-app)
