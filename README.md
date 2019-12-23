@@ -176,7 +176,37 @@ and the index of the item which was clicked. For more details on these objects p
     }
 ```
 
-### 1.6 Restart App on phone reboot
+### 1.6 Support Push notifications
+
+#### 1. Init taboola Plus 
+You need to init TaboolaPlus (see [init TaboolaPlus](#13-init-taboolaplus) section)
+
+#### 2. implement Firebase Messaging Service 
+If your app doesn't use Firebase Messaging service, you need to add it
+(see [FCM implementaton](https://firebase.google.com/docs/reference/android/com/google/firebase/messaging/FirebaseMessagingService))<br>
+If your app use FCM already, follow to the next step
+
+#### 3. Add these lines to your Firebase Messaging Service:
+ ```java
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
+        boolean isPushHandledByTaboola = TBPushNotificationsManager.handleTaboolaPush(remoteMessage);
+        if (isPushHandledByTaboola) {
+            // Push was handled by Taboola, not further actions required
+        } else {
+            // todo this is not Taboola push, and you should handle it
+        }
+    }
+
+    @Override
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
+        TBPushNotificationsManager.onNewFirebaseToken(token);
+    }
+ ``` 
+
+### 1.7 Restart App on phone reboot
 To be able launch app on phone boot completed, we recommend you to implement these 3 simple steps.
 
 1. Add permission to manifest
