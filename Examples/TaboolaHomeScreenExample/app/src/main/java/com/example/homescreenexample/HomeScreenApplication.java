@@ -11,7 +11,7 @@ public class HomeScreenApplication extends Application {
     public void onCreate() {
         super.onCreate();
         // Taboola plus initialization
-        TaboolaPlus.init("taboola-reader-app", "conf1",
+        TaboolaPlus.init("sdk-tester-demo", "conf1",
                 new TaboolaPlus.TaboolaPlusRetrievedCallback() {
                     @Override
                     public void onTaboolaPlusRetrieved(TaboolaPlus taboolaPlus) {

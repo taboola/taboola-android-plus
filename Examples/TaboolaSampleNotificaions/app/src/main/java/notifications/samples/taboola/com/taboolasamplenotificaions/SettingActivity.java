@@ -50,7 +50,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void initTaboolaSdkPlus() {
-        TaboolaPlus.init("taboola-reader-app", "conf1",
+        TaboolaPlus.init("sdk-tester-demo", "conf1",
                 taboolaPlus -> {
                     Log.d(TAG, "onTaboolaPlusRetrieved()");
                     initNotificationClickHandling();
