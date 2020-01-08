@@ -109,7 +109,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void initTaboolaPlus() {
         // Init Taboola plus and Notification manager. After that set list of chosen categories to it.
         final ArrayList<String> categories = new ArrayList<>();
-        TaboolaPlus.init("taboola-reader-app", "conf1",
+        TaboolaPlus.init("sdk-tester-demo", "conf1",
                 new TaboolaPlus.TaboolaPlusRetrievedCallback() {
                     @Override
                     public void onTaboolaPlusRetrieved(TaboolaPlus taboolaPlus) {
