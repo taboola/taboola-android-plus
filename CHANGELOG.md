@@ -1,5 +1,32 @@
 # Change Log
 
+## [1.3.4] - 2020-01-01
+### Added:
+support push notifications
+### Improved:
+BI reporting
+Performance
+Monitoring
+
+### Fixed:
+Broken config crashes 
+Upgrade versions bug
+Blinking screen after custom unlock on Samsung devices
+
+## [1.2.2] - 2019-10-07
+### Added:
+Localization & data validation for push notifications
+
+### Improved:
+BI reporting
+Config properties
+Click url handling
+
+### Fixed:
+format for “time” field in events that are sent to TRC
+checking WI-FI availability
+“Read more” invalid thumbnail
+
 ## [1.1.0] - 17.07.19
 ### Added
 - Server response validation
