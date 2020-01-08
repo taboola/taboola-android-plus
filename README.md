@@ -1,14 +1,13 @@
 # Taboola Recommendations Notification SDK (TaboolaPlus)
 ![Platform](https://img.shields.io/badge/Platform-Android-green.svg)
 [![License](https://img.shields.io/badge/License%20-Taboola%20SDK%20License-blue.svg)](https://github.com/taboola/taboola-android/blob/master/LICENSE)
-[ ![Download](https://api.bintray.com/packages/taboola-com/taboola-android-sdk/android-sdk-plus/images/download.svg?version=1.2.2) ](https://bintray.com/taboola-com/taboola-android-sdk/android-sdk-plus/1.2.2/link)
+[ ![Download](https://api.bintray.com/packages/taboola-com/taboola-android-sdk/android-sdk-plus/images/download.svg) ](https://bintray.com/taboola-com/taboola-android-sdk/android-sdk-plus/_latestVersion)
 ## Table Of Contents
 1. [Getting Started](#1-getting-started)
 2. [Example Apps](#2-example-app)
 3. [SDK Reference](#3-sdk-reference)
 4. [Home Screen News](#4-home-Screen-news)
-5. [Proguard](#5-proguard)
-6. [License](#6-license)
+5. [License](#5-license)
 
 ## Introduction
 Taboola SDK Plus allows you to display Taboola recommendations in an Android notification from your app.
@@ -53,20 +52,19 @@ the TaboolaPlus can be used in an app.
 Add the library dependency to your project gradle file
 
 ```groovy
-    implementation 'com.taboola:android-sdk-plus:1.0.6'
+    implementation 'com.taboola:android-sdk-plus:1.3.4'
+    implementation 'com.android.support:customtabs:28.0.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 ```
 
- TaboolaPlus has the following dependencies (added automatically by gradle)
+ TaboolaPlus has the following transitive dependencies (added automatically by gradle)
 
 ```groovy
-    api('com.taboola:android-sdk:2.2.0') {
+    api('com.taboola:android-sdk:2.3.7') {
         exclude group: 'com.android.support', module: 'customtabs'
         exclude group: 'com.android.support', module: 'support-v4'
     }
-    compileOnly 'com.android.support:customtabs:27.1.1'
-    compileOnly 'com.squareup.retrofit2:retrofit:2.3.0'
-    compileOnly 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compileOnly 'com.squareup.picasso:picasso:2.5.2'
 ```
 
 > ## Notice
@@ -93,19 +91,15 @@ TaboolaPlus.init("<publisher-name>", "<config-id>",
                 // todo handle error
             }
         });
-
-
 ```
  
  `<publisher-name>` and `<config-id>` strings will be provided by your Taboola account manager.
  
-> ## Notice
-> Please make sure to initilize the SDK before invoking any `getInstance` function anywhere in your code
-
 ### 1.4 Controlling notifications
 
 #### Enabling notifications
-In order to start displaying notifications, notifications must be enabled via `TBNotificationManager#enable()` that can be obtained from `TaboolaPlus` object.
+In order to start displaying notifications, notifications must be enabled via `TBNotificationManager#enable()` and categories must be set via `TBNotificationManager#setCategories()`.
+`TBNotificationManager` object that can be obtained from `TaboolaPlus` object.
 
 Once the notifications are enabled, they will continue to show and be updated periodically even if your app is not running.
 
@@ -160,6 +154,8 @@ and the index of the item which was clicked. For more details on these objects p
 
 `TBNotificationManager.handleClickIntent()` will perform intent validation and execute `TBRecommendationItem#handleClick()` to trigger the recommendation click flow.  see [Taboola SDK documentation](https://github.com/taboola/taboola-android-api#19-intercepting-recommendation-clicks) for more details about setting a click callback, or intercepting clicks.
 
+Add the following code to your Activity that will handle clicks:
+(The idea is that after user will finish reading clicked item, he will be brought back to your activity)
 ```java
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,19 +219,19 @@ TBD
 ## 4. Home Screen News
 ### 4.1 Init Home Screen News manager
 You have to init Home Screen News manager in order to use this feature.
-(It is inited independently from TaboolaPlus)
+(It must be inited after TaboolaPlus init is successful)
 ```java
  TBHomeScreenNewsManager.getInstance().init();
 ```
 
-### 4.2 Implement home screen reciever
-You have to implement broadcast reciever in order to know when you should run your Home Screen News activity (action = `com.taboola.android.plus.homeScreen.OPEN_HOME_SCREEN`).
+### 4.2 Implement home screen receiver
+You have to implement broadcast receiver in order to know when you should run your Home Screen News activity (action = `com.taboola.android.plus.homeScreen.OPEN_HOME_SCREEN`).
 ``` java
 public class HomeScreenNewsReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-            //run home screen activity
+            //run your home screen activity
              Intent hsnIntent = new Intent(context, HomeScreenActivity.class);
              hsnIntent.putExtras(intent.getExtras());
              hsnIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -308,15 +304,6 @@ Check if home screen enabled, true - enabled, false - not enabled
 ```java
 TBHomeScreenNewsManager.getInstance().isHomeScreenEnabled();
 ```
-
-
-## 5. ProGuard
-You can find proguard rules for Taboola sdk plus in [proguard-taboola-api.pro](https://github.com/taboola/taboola-android-api/blob/master/Examples/Article-Page-4-Items-Bottom/app/proguard-taboola-api.pro) file.
-
-If you are also using TaboolaWidget, you can find proguard rules for Taboola Widget in [proguard-taboola-widget.pro](https://github.com/taboola/taboola-android/blob/master/app/proguard-taboola-widget.pro) file.
-
-The file contains instructions to the rules which you should use depending on which parts of the SDK you are using (you should comment/uncomment which you need).
-
-## 6. License
+## 5. License
 This program is licensed under the Taboola, Inc. SDK License Agreement (the “License Agreement”).  By copying, using or redistributing this program, you agree with the terms of the License Agreement.  The full text of the license agreement can be found at [https://github.com/taboola/taboola-android/blob/master/LICENSE](https://github.com/taboola/taboola-android/blob/master/LICENSE).
 Copyright 2017 Taboola, Inc.  All rights reserved.
