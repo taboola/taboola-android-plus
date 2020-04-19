@@ -1,6 +1,7 @@
 # Taboola SDK Plus (Notifications) - Taboola News
-
-Latest Android SDK Plus Version: 1.3.4 (01/01/2020)
+![Platform](https://img.shields.io/badge/Platform-Android-green.svg)
+[![License](https://img.shields.io/badge/License%20-Taboola%20SDK%20License-blue.svg)](https://github.com/taboola/taboola-android/blob/master/LICENSE)
+[![Version](https://api.bintray.com/packages/taboola-com/taboola-android-sdk/android-sdk-plus/images/download.svg) ](https://bintray.com/taboola-com/taboola-android-sdk/android-sdk-plus/_latestVersion)
 
 Taboola SDK Plus allows you to display Taboola recommendations in an Android notification from your app. You can browse through this example app in this repository to see how the SDK can be used in an app.
 

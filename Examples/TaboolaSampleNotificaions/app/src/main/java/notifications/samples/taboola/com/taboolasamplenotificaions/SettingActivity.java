@@ -1,20 +1,28 @@
 package notifications.samples.taboola.com.taboolasamplenotificaions;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.taboola.android.api.TaboolaApi;
-import com.taboola.android.plus.TaboolaPlus;
-import com.taboola.android.plus.notification.TBNotificationManager;
+import com.taboola.android.plus.core.PlusFeature;
+import com.taboola.android.plus.core.TBLScheduledManager;
+import com.taboola.android.plus.core.TaboolaSdkPlus;
+import com.taboola.android.plus.shared.TBLNotificationManager;
+import com.taboola.android.utils.Logger;
 
 import java.util.List;
+
+import static notifications.samples.taboola.com.taboolasamplenotificaions.SampleApplication.ACTION_FOR_INIT_FINISH;
+import static notifications.samples.taboola.com.taboolasamplenotificaions.SampleApplication.EXTRA_FOR_INIT_FINISH;
 
 public class SettingActivity extends AppCompatActivity {
     private static final String TAG = SettingActivity.class.getSimpleName();
@@ -24,7 +32,7 @@ public class SettingActivity extends AppCompatActivity {
     RecyclerView recyclerViewCategories;
 
     private AppSettings appSettings;
-    TBNotificationManager notificationManager;
+    private TBLScheduledManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,60 +41,63 @@ public class SettingActivity extends AppCompatActivity {
         switchAllowNotification = findViewById(R.id.switch_allow_notifications);
         categoriesHeader = findViewById(R.id.tv_categories_header);
         recyclerViewCategories = findViewById(R.id.rec_view);
-
         appSettings = AppSettingManager.getAppSettings(this);
 
-        initTaboolaSdkPlus();
-
         if (savedInstanceState == null) {
-            TBNotificationManager.handleClick(getIntent(), this);
+            TBLNotificationManager.handleClick(getIntent(), this);
         }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        TBNotificationManager.handleClick(intent, this);
+        TBLNotificationManager.handleClick(intent, this);
     }
 
-    private void initTaboolaSdkPlus() {
-        TaboolaPlus.init("sdk-tester-demo", "conf1",
-                taboolaPlus -> {
-                    Log.d(TAG, "onTaboolaPlusRetrieved()");
-                    initNotificationClickHandling();
-                    notificationManager = taboolaPlus.getNotificationManager();
+    /**
+     * will be called when init of Scheduled Notification finished successfully.
+     */
+    private void onScheduledNotificationInitFinished() {
+        initNotificationClickHandling();
 
-                    setLastUsedSettings();
-
-                    initSettingsLayout();
-                },
-                throwable -> {
-                    Log.e(TAG, "initTaboolaSdkPLus: " + throwable.getMessage(), throwable);
-                    // todo handle init fail
-                });
-    }
-
-    private void initNotificationClickHandling() {
-        TaboolaApi.getInstance().setOnClickListener((placementName, itemId, clickUrl, isOrganic) -> {
-            if (isOrganic) {
-                //TODO your click implementation
-                return false;
-            } else {
-                return true;
-            }
-        });
-    }
-
-    private void setLastUsedSettings() {
+        //update notifications categorises
         List<String> selectedCategoriesIds = AppSettingManager
                 .getSelectedCategoriesIds(appSettings.getCategories());
         notificationManager.setCategories(selectedCategoriesIds);
+
+        //use custom name for notifications, this is optional
+        notificationManager.setNotificationAppNameLabel("SdkPlusTest");
+
+        //using this code you can enable or disable notifications
         if (appSettings.isAllowNotifications()) {
             notificationManager.enable();
         } else {
             notificationManager.disable();
         }
+        initSettingsLayout();
     }
+
+    //this receiver is used to receive intents fired by SampleApplication,
+    // onReceive will be called sdk plus init finished
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            PlusFeature plusFeature = (PlusFeature) intent.getSerializableExtra(EXTRA_FOR_INIT_FINISH);
+            Logger.d(TAG, "PlusFeature FINISH " + plusFeature.name());
+
+            //when getting this action from SampleApplication
+            // that's mean that init of ScheduledNotification finished.
+            if (plusFeature == PlusFeature.SCHEDULED_NOTIFICATIONS) {
+                notificationManager = TaboolaSdkPlus.getScheduledNotificationManager();
+                final boolean isInit = notificationManager != null
+                        && notificationManager.isInitialized();
+                if (isInit) {
+                    //init of Scheduled Notification finished successfully
+                    onScheduledNotificationInitFinished();
+                }
+            }
+        }
+    };
 
     private void initSettingsLayout() {
         categoriesHeader.setVisibility(View.VISIBLE);
@@ -115,5 +126,25 @@ public class SettingActivity extends AppCompatActivity {
         });
         recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewCategories.setAdapter(adapter);
+    }
+
+    private void initNotificationClickHandling() {
+        TaboolaApi.getInstance().setOnClickListener((placementName, itemId, clickUrl, isOrganic) -> {
+            //TODO your click implementation
+            return !isOrganic;
+        });
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver, new IntentFilter(ACTION_FOR_INIT_FINISH));
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(receiver);
+        super.onPause();
     }
 }
