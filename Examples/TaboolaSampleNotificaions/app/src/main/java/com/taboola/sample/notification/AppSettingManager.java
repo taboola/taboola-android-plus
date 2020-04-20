@@ -1,4 +1,4 @@
-package notifications.samples.taboola.com.taboolasamplenotificaions;
+package com.taboola.sample.notification;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,12 +10,12 @@ import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class AppSettingManager {
+class AppSettingManager {
 
     private static final String APP_SETTINGS_KEY = "app_config";
     private static final String SHARED_PREF_NAME = "app_setting";
 
-    public static AppSettings getAppSettings(Context context) {
+    static AppSettings getAppSettings(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
         String json = sharedPreferences.getString(APP_SETTINGS_KEY, null);
         if (json != null) {
@@ -39,14 +39,14 @@ public class AppSettingManager {
         }
     }
 
-    public static void updateAppSettings(Context context, AppSettings appSettings) {
+    static void updateAppSettings(Context context, AppSettings appSettings) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(APP_SETTINGS_KEY, new Gson().toJson(appSettings));
         editor.apply();
     }
 
-    public static List<String> getSelectedCategoriesIds(List<Category> categories) {
+    static List<String> getSelectedCategoriesIds(List<Category> categories) {
         ArrayList<String> categoriesIds = new ArrayList<>();
         for (int i = 0; i < categories.size(); i++) {
             if (categories.get(i).isEnable()) {

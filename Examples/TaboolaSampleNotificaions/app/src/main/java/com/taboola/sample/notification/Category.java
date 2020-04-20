@@ -1,8 +1,8 @@
-package notifications.samples.taboola.com.taboolasamplenotificaions;
+package com.taboola.sample.notification;
 
 import java.io.Serializable;
 
-public class Category implements Serializable{
+class Category implements Serializable{
 
     private String id;
     private String name;

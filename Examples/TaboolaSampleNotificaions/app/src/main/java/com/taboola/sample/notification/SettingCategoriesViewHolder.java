@@ -1,28 +1,30 @@
-package notifications.samples.taboola.com.taboolasamplenotificaions;
+package com.taboola.sample.notification;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 
-public class SettingCategoriesViewHolder extends RecyclerView.ViewHolder {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
+
+class SettingCategoriesViewHolder extends RecyclerView.ViewHolder {
 
     public interface SettingsHolderCallback {
         void onCategoryChanges();
     }
 
-    private CheckBox cbAllowCategory;
+    private final CheckBox cbAllowCategory;
 
     @NonNull
-    private SettingsHolderCallback callback;
+    private final SettingsHolderCallback callback;
 
     @Nullable
     private Category category;
 
     public SettingCategoriesViewHolder(View itemView, @NonNull SettingsHolderCallback callback) {
         super(itemView);
-        cbAllowCategory=itemView.findViewById(R.id.cb_allow);
+        cbAllowCategory = itemView.findViewById(R.id.cb_allow);
         this.callback = callback;
     }
 
@@ -31,7 +33,7 @@ public class SettingCategoriesViewHolder extends RecyclerView.ViewHolder {
         cbAllowCategory.setOnCheckedChangeListener(null);
         cbAllowCategory.setText(category.getName());
         cbAllowCategory.setChecked(category.isEnable());
-        if(category.getName().equals("General")){
+        if (category.getName().equals("General")) {
             cbAllowCategory.setEnabled(false);
         }
         initOnChangeListener();
