@@ -1,40 +1,75 @@
 package com.taboola.samples.endlessfeed;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Point;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
 
-import com.taboola.android.api.TBPlacement;
-import com.taboola.android.api.TBPlacementRequest;
-import com.taboola.android.api.TBRecommendationItem;
-import com.taboola.android.api.TBRecommendationRequestCallback;
-import com.taboola.android.api.TBRecommendationsRequest;
-import com.taboola.android.api.TBRecommendationsResponse;
-import com.taboola.android.api.TaboolaApi;
-import com.taboola.android.plus.notification.TBNotificationManager;
-import com.taboola.samples.endlessfeed.sampleUtil.DemoItem;
-import com.taboola.samples.endlessfeed.sampleUtil.EndlessScrollListener;
-import com.taboola.samples.endlessfeed.sampleUtil.FeedAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+import com.taboola.android.plus.core.PlusFeature;
+import com.taboola.android.plus.core.TBLScheduledManager;
+import com.taboola.android.plus.core.TaboolaSdkPlus;
+import com.taboola.android.plus.shared.TBLNotificationManager;
+import com.taboola.android.utils.Logger;
+
+import java.util.Collections;
+
+import static com.taboola.samples.endlessfeed.UtilsHelper.ACTION_FOR_INIT_FINISH;
+import static com.taboola.samples.endlessfeed.UtilsHelper.EXTRA_FOR_INIT_FINISH;
+import static com.taboola.samples.endlessfeed.UtilsHelper.showToast;
 
 
 public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Snackbar snackbar;
-    private RecyclerView.Adapter mAdapter;
-    private TBPlacement mPlacement;
-    private final List<Object> mData = new ArrayList<>();
-    private String placementName = "list_item";
+    private static final String CAT_GENERAL = "general";
+
+    private TBLScheduledManager scheduledNotificationManager;
+    private FloatingActionButton allowNotificationSwitch;
+
+    /**
+     * The pager widget, which handles animation and allows swiping horizontally to access previous
+     * and next wizard steps.
+     */
+    private ViewPager2 viewPager;
+
+    /**
+     * The pager adapter, which provides the pages to the view pager widget.
+     */
+    private ScreenSlidePagerAdapter pagerAdapter;
+
+    /**
+     * this receiver is used to receive intents fired by SampleApplication,
+     * onReceive will be called sdk plus init finished
+     */
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && TextUtils.equals(ACTION_FOR_INIT_FINISH, intent.getAction())) {
+                PlusFeature plusFeature = (PlusFeature) intent.getSerializableExtra(EXTRA_FOR_INIT_FINISH);
+                Logger.d(TAG, "PlusFeature FINISH " + plusFeature.name());
+
+                //when getting this action from SampleApplication
+                // that's mean that init of ScheduledNotification finished.
+                if (plusFeature == PlusFeature.SCHEDULED_NOTIFICATIONS) {
+                    scheduledNotificationManager = TaboolaSdkPlus.getScheduledNotificationManager();
+                    if (scheduledNotificationManager != null) {
+                        //init of Scheduled Notification finished successfully
+                        onScheduledNotificationInitFinished();
+                    }
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,132 +77,89 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             // Avoid handling click again when activity is recreated
-            TBNotificationManager.handleClick(getIntent(), this);
+            TBLNotificationManager.handleClick(getIntent(), this);
         }
 
         initLayout();
-        fetchTaboolaRecommendations();
+
+        scheduledNotificationManager = TaboolaSdkPlus.getScheduledNotificationManager();
+        //if manager is null mean the init still in progress and you should wait for onReceive in the receiver above
+        if (scheduledNotificationManager != null) {
+            //ScheduledNotification is already initialized
+            onScheduledNotificationInitFinished();
+        }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         // Handling notification click
-        TBNotificationManager.handleClick(intent, this);
+        TBLNotificationManager.handleClick(intent, this);
     }
-
 
     private void initLayout() {
         setContentView(R.layout.activity_main);
-        FloatingActionButton settingsFab = findViewById(R.id.setting_fab);
-        settingsFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SettingsActivity.launch(MainActivity.this);
+        allowNotificationSwitch = findViewById(R.id.setting_fab);
+        allowNotificationSwitch.setVisibility(View.GONE);
+
+        allowNotificationSwitch.setOnClickListener(v -> {
+            v.setSelected(!v.isSelected());
+            if (v.isSelected()) {
+                //enable Scheduled Notification
+                scheduledNotificationManager.enable();
+                showToast(this, "Notification enabled");
+            } else {
+                //disable Scheduled Notification
+                scheduledNotificationManager.disable();
+                showToast(this, "Notification disabled");
             }
         });
-        RecyclerView mRecyclerView = findViewById(R.id.main_recycler_view);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        EndlessScrollListener scrollListener = new EndlessScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadNextRecommendationsBatch();
-            }
-        };
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addOnScrollListener(scrollListener);
-        mAdapter = new FeedAdapter(mData);
-        mRecyclerView.setAdapter(mAdapter);
-        snackbar = Snackbar.make(mRecyclerView, "Waiting for network", Snackbar.LENGTH_INDEFINITE);
-        snackbar.show();
+
+        // Instantiate a ViewPager2 and a PagerAdapter.
+        viewPager = findViewById(R.id.pager);
+        viewPager.setPageTransformer(new ZoomOutPageTransformer());
+
+        pagerAdapter = new ScreenSlidePagerAdapter(this);
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(pagerAdapter.getItemCount());
+
+
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> tab.setText(pagerAdapter.getFragmentTitle(position))
+        ).attach();
     }
 
-    public void onAttributionClick(View view) {
-        TaboolaApi.getInstance().handleAttributionClick(this);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver, new IntentFilter(ACTION_FOR_INIT_FINISH));
     }
 
-    // region feed related logic
-
-    private void onRecommendationsFetched(TBPlacement placement) {
-        placement.prefetchThumbnails();
-        mPlacement = placement;
-        List<Object> mergedFeedItems = mergeFeedItems(getDemoData(), placement.getItems());
-
-        int currentSize = mAdapter.getItemCount();
-        mData.addAll(mergedFeedItems);
-        mAdapter.notifyItemRangeInserted(currentSize, mergedFeedItems.size());
+    @Override
+    protected void onPause() {
+        unregisterReceiver(receiver);
+        super.onPause();
     }
 
-    private List<Object> mergeFeedItems(List<DemoItem> demoItems,
-                                        List<TBRecommendationItem> recommendationItems) {
-        int size = demoItems.size() + recommendationItems.size();
-        List<Object> mergedFeedItems = new ArrayList<>(size);
-        mergedFeedItems.addAll(demoItems);
 
-        // insert taboola ad every 4 elements
-        int nextInsertionIndex = 4;
-        for (TBRecommendationItem item : recommendationItems) {
-            mergedFeedItems.add(nextInsertionIndex, item);
-            nextInsertionIndex += 5;
-        }
+    private void onScheduledNotificationInitFinished() {
 
-        return mergedFeedItems;
+         /* in order to start displaying notifications,
+         notifications must be enabled via the TBLScheduledManager#enable()
+         and the Taboola News categories must be set
+         via the TBLScheduledManager#setCategories() method */
+
+        /* As a Taboola News publisher, you can choose to allow your user to customize
+         the recommendations displayed on the notification by choosing content categories
+         (News, Sports, Tech, etc.)
+          In order to show a mix of all content categories, set the "general" category. */
+        scheduledNotificationManager.setCategories(Collections.singletonList(CAT_GENERAL));
+
+        //display switch button to disable or enable the scheduled notifications
+        allowNotificationSwitch.setVisibility(View.VISIBLE);
+        allowNotificationSwitch.setSelected(scheduledNotificationManager.isEnabled());
     }
 
-    private List<DemoItem> getDemoData() {
-        List<DemoItem> list = new ArrayList<>(16);
-        Resources res = getResources();
-        for (int i = 0; i < 4; i++) {
-            list.add(new DemoItem(R.mipmap.ic_launcher, res.getString(R.string.lorem_ipsum1)));
-            list.add(new DemoItem(R.mipmap.ic_launcher_round, res.getString(R.string.lorem_ipsum2)));
-            list.add(new DemoItem(android.R.mipmap.sym_def_app_icon, res.getString(R.string.lorem_ipsum3)));
-            list.add(new DemoItem(R.drawable.image_demo, res.getString(R.string.lorem_ipsum4)));
-        }
-        return list;
-    }
-
-    private void fetchTaboolaRecommendations() {
-        Point screenSize = new Point();
-        getWindowManager().getDefaultDisplay().getSize(screenSize);
-
-        TBPlacementRequest placementRequest = new TBPlacementRequest(placementName, 4)
-                .setThumbnailSize(screenSize.x / 2, (screenSize.y / 6)); // ThumbnailSize is optional
-
-        TBRecommendationsRequest request = new TBRecommendationsRequest("http://example.com", "text");
-        request.addPlacementRequest(placementRequest);
-
-        TaboolaApi.getInstance().fetchRecommendations(request, new TBRecommendationRequestCallback() {
-            @Override
-            public void onRecommendationsFailed(Throwable throwable) {
-                Toast.makeText(MainActivity.this, "Fetch failed: " + throwable.getMessage(),
-                        Toast.LENGTH_LONG).show();
-                snackbar.dismiss();
-            }
-
-            @Override
-            public void onRecommendationsFetched(TBRecommendationsResponse response) {
-                MainActivity.this.onRecommendationsFetched(response.getPlacementsMap().get(placementName));
-                snackbar.dismiss();
-            }
-        });
-    }
-
-    private void loadNextRecommendationsBatch() {
-        TaboolaApi.getInstance().getNextBatchForPlacement(mPlacement, new TBRecommendationRequestCallback() {
-            @Override
-            public void onRecommendationsFetched(TBRecommendationsResponse response) {
-                TBPlacement placement = response.getPlacementsMap().values().iterator().next(); // there will be only one placement
-                MainActivity.this.onRecommendationsFetched(placement);
-            }
-
-            @Override
-            public void onRecommendationsFailed(Throwable throwable) {
-                Toast.makeText(MainActivity.this, "Fetch failed: " + throwable.getMessage(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    // endregion
 }

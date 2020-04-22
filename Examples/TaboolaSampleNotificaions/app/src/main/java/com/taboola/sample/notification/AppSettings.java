@@ -1,14 +1,14 @@
-package notifications.samples.taboola.com.taboolasamplenotificaions;
+package com.taboola.sample.notification;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class AppSettings implements Serializable {
+class AppSettings implements Serializable {
 
     private boolean allowNotifications;
     private List<Category> categories;
 
-    public AppSettings(boolean allowNotifications, List<Category> categories) {
+    AppSettings(boolean allowNotifications, List<Category> categories) {
         this.allowNotifications = allowNotifications;
         this.categories = categories;
     }

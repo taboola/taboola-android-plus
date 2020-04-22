@@ -1,12 +1,13 @@
-package com.taboola.samples.endlessfeed.sampleUtil;
+package com.taboola.samples.endlessfeed.api_feed;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public abstract class EndlessScrollListener extends RecyclerView.OnScrollListener {
+abstract class EndlessScrollListener extends RecyclerView.OnScrollListener {
     // The current offset index of data you have loaded
     private int currentPage = 0;
-    // The total number of items in the dataset after the last load
+    // The total number of items in the data set after the last load
     private int previousTotalItemCount = 0;
     // True if we are still waiting for the last set of data to load.
     private boolean loading = true;
@@ -21,7 +22,7 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
     // We are given a few useful parameters to help us work out if we need to load some more data,
     // but first we check if we are waiting for the previous load to finish.
     @Override
-    public void onScrolled(RecyclerView view, int dx, int dy) {
+    public void onScrolled(@NonNull RecyclerView view, int dx, int dy) {
         int lastVisibleItemPosition;
         int totalItemCount = mLayoutManager.getItemCount();
 
@@ -31,13 +32,14 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
         // list is invalidated and should be reset back to initial state
         if (totalItemCount < previousTotalItemCount) {
             // Sets the starting page index
-            this.currentPage = 0;
+            int startingPageIndex = 0;
+            this.currentPage = startingPageIndex;
             this.previousTotalItemCount = totalItemCount;
             if (totalItemCount == 0) {
                 this.loading = true;
             }
         }
-        // If it’s still loading, we check to see if the dataset count has
+        // If it’s still loading, we check to see if the data set count has
         // changed, if so we conclude it has finished loading and update the current page
         // number and total item count.
         if (loading && (totalItemCount > previousTotalItemCount)) {
@@ -53,9 +55,11 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
         // before loading more.
         int visibleThreshold = 5;
         if (!loading && (lastVisibleItemPosition + visibleThreshold) > totalItemCount) {
-            currentPage++;
-            onLoadMore(currentPage, totalItemCount, view);
-            loading = true;
+            if (totalItemCount != 1) { // Remove this line if you don't push an article as the first item in the recyclerview!
+                currentPage++;
+                onLoadMore(currentPage, totalItemCount, view);
+                loading = true;
+            }
         }
     }
 
