@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.firebase.FirebaseApp;
 import com.taboola.android.plus.core.PlusFeature;
 import com.taboola.android.plus.core.SdkPlusInitCallback;
 import com.taboola.android.plus.core.SdkPlusPublisherInfo;
@@ -29,7 +28,8 @@ public class SampleApplication extends Application {
         /* SDK Plus requires the app to use Firebase.
          * Please make sure to integrate it according to the official FCM documentation
          * https://firebase.google.com/docs/android/setup */
-        FirebaseApp.initializeApp(this);
+        // FirebaseApp.initializeApp(this); this line should be uncommented in your app,
+        // this will not work as you are missing google-services.json in this app.
 
         //init sdk plus
         initSdkPlus(this);

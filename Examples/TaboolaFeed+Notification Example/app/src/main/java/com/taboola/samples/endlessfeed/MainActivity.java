@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initLayout() {
         setContentView(R.layout.activity_main);
-        allowNotificationSwitch = findViewById(R.id.setting_fab);
+        allowNotificationSwitch = findViewById(R.id.allow_notification_switch);
         allowNotificationSwitch.setVisibility(View.GONE);
 
         allowNotificationSwitch.setOnClickListener(v -> {

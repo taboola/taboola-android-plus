@@ -57,7 +57,10 @@ public class MainActivity extends AppCompatActivity {
                         //init of Scheduled Notification finished successfully
                         onScheduledNotificationInitFinished();
                     }
-                } else if (plusFeature == PlusFeature.PUSH_NOTIFICATIONS) {
+                }
+                //when getting this action from SampleApplication
+                // that's mean that init of PushNotification finished.
+                else if (plusFeature == PlusFeature.PUSH_NOTIFICATIONS) {
                     pushNotificationManager = TaboolaSdkPlus.getPushNotificationManager();
                     if (pushNotificationManager != null) {
                         //init of Push Notification finished successfully
