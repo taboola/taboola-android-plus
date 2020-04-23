@@ -1,4 +1,4 @@
-package com.taboola.samples.endlessfeed;
+package com.taboola.sample.notification.push;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,12 +9,11 @@ import android.text.TextUtils;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.taboola.android.plus.core.PlusFeature;
+import com.taboola.android.plus.core.TBLPushManager;
 import com.taboola.android.plus.core.TBLScheduledManager;
 import com.taboola.android.plus.core.TaboolaSdkPlus;
 import com.taboola.android.plus.shared.TBLNotificationManager;
@@ -22,29 +21,21 @@ import com.taboola.android.utils.Logger;
 
 import java.util.Collections;
 
-import static com.taboola.samples.endlessfeed.UtilsHelper.ACTION_FOR_INIT_FINISH;
-import static com.taboola.samples.endlessfeed.UtilsHelper.EXTRA_FOR_INIT_FINISH;
-import static com.taboola.samples.endlessfeed.UtilsHelper.showToast;
+import static com.taboola.sample.notification.push.UtilsHelper.ACTION_FOR_INIT_FINISH;
+import static com.taboola.sample.notification.push.UtilsHelper.EXTRA_FOR_INIT_FINISH;
+import static com.taboola.sample.notification.push.UtilsHelper.showToast;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String CAT_GENERAL = "general";
+    private static final String CATEGORY_GENERAL = "general";
 
     private TBLScheduledManager scheduledNotificationManager;
+    private TBLPushManager pushNotificationManager;
+
     private FloatingActionButton allowNotificationSwitch;
 
-    /**
-     * The pager widget, which handles animation and allows swiping horizontally to access previous
-     * and next wizard steps.
-     */
-    private ViewPager2 viewPager;
-
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
-    private ScreenSlidePagerAdapter pagerAdapter;
 
     /**
      * this receiver is used to receive intents fired by SampleApplication,
@@ -67,9 +58,19 @@ public class MainActivity extends AppCompatActivity {
                         onScheduledNotificationInitFinished();
                     }
                 }
+                //when getting this action from SampleApplication
+                // that's mean that init of PushNotification finished.
+                else if (plusFeature == PlusFeature.PUSH_NOTIFICATIONS) {
+                    pushNotificationManager = TaboolaSdkPlus.getPushNotificationManager();
+                    if (pushNotificationManager != null) {
+                        //init of Push Notification finished successfully
+                        onPushNotificationInitFinished();
+                    }
+                }
             }
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +81,21 @@ public class MainActivity extends AppCompatActivity {
             TBLNotificationManager.handleClick(getIntent(), this);
         }
 
+
         initLayout();
 
         scheduledNotificationManager = TaboolaSdkPlus.getScheduledNotificationManager();
-        //if manager is null mean the init still in progress and you should wait for onReceive in the receiver above
+        //if manager is null it means that ScheduledNotification init still in progress and you should wait for onReceive in the receiver above
         if (scheduledNotificationManager != null) {
             //ScheduledNotification is already initialized
             onScheduledNotificationInitFinished();
+        }
+
+        pushNotificationManager = TaboolaSdkPlus.getPushNotificationManager();
+        //if manager is null it means that PushNotification init still in progress and you should wait for onReceive in the receiver above
+        if (pushNotificationManager != null) {
+            //PushNotification is already initialized
+            onPushNotificationInitFinished();
         }
     }
 
@@ -115,20 +124,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        // Instantiate a ViewPager2 and a PagerAdapter.
-        viewPager = findViewById(R.id.pager);
-        viewPager.setPageTransformer(new ZoomOutPageTransformer());
-
-        pagerAdapter = new ScreenSlidePagerAdapter(this);
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(pagerAdapter.getItemCount());
-
-
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> tab.setText(pagerAdapter.getFragmentTitle(position))
-        ).attach();
+        //adding SDK feed fragment
+        try {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, new ScrollViewFeedFragment())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commitAllowingStateLoss();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -143,6 +147,11 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    private void onPushNotificationInitFinished() {
+        //optional code, change push notifications app name label
+        pushNotificationManager.setNotificationAppNameLabel("Breaking News");
+    }
+
 
     private void onScheduledNotificationInitFinished() {
 
@@ -155,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
          the recommendations displayed on the notification by choosing content categories
          (News, Sports, Tech, etc.)
           In order to show a mix of all content categories, set the "general" category. */
-        scheduledNotificationManager.setCategories(Collections.singletonList(CAT_GENERAL));
+        scheduledNotificationManager.setCategories(Collections.singletonList(CATEGORY_GENERAL));
 
         //display switch button to disable or enable the scheduled notifications
         allowNotificationSwitch.setVisibility(View.VISIBLE);
