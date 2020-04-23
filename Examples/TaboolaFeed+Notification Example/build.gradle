@@ -9,7 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.android.tools.build:gradle:4.0.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,6 +20,10 @@ allprojects {
     repositories {
         jcenter()
         google()
+        maven {
+            // Taboola:
+            url 'https://taboolapublic.jfrog.io/artifactory/mobile-release'
+        }
         flatDir {
             dirs 'libs'
         }
